@@ -53,7 +53,7 @@ public class Pin {
     public void tickServer(RenderWorldLastEvent event) {
         // System.out.println("sushi3");
         if (flag) {
-            Minecraft.getMinecraft().renderEngine.bindTexture(new ResourceLocation("examplemod", "textures/pin_icon_1.png"));
+            Minecraft.getMinecraft().renderEngine.bindTexture(new ResourceLocation("pinmod", "textures/pin_icon_1.png"));
             Tessellator tess = Tessellator.instance;
             GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
             GL11.glPushMatrix();
