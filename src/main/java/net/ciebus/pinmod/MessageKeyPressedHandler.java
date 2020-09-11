@@ -11,9 +11,7 @@ public class MessageKeyPressedHandler implements IMessageHandler<MessageKeyPress
     @Override
     public IMessage onMessage(MessageKeyPressed message, MessageContext ctx) {
         EntityPlayer entityPlayer = ctx.getServerHandler().playerEntity;
-        //受け取ったMessageクラスのkey変数の数字をチャットに出力
-
-        entityPlayer.addChatComponentMessage(new ChatComponentText(String.format("Received byte %d", message.key)));
+        entityPlayer.addChatComponentMessage(new ChatComponentText(String.format("%s pinned! %d: %f %f %f ", message.playerName, message.dimId,message.x,message.y,message.z)));
         return null;
     }
 }

@@ -123,8 +123,7 @@ public class Pin {
         if (ClientProxy.pinKey.isPressed()) {
             MovingObjectPosition mop = Minecraft.getMinecraft().renderViewEntity.rayTrace(200, 1.0F);
             if (mop != null) {
-                //some data to server
-                PacketHandler.INSTANCE.sendToServer(new MessageKeyPressed((byte) 0x01));
+                PacketHandler.INSTANCE.sendToServer(new MessageKeyPressed(mop.hitVec.xCoord,mop.hitVec.yCoord,mop.hitVec.zCoord,Minecraft.getMinecraft().thePlayer.worldObj.provider.dimensionId,Minecraft.getMinecraft().thePlayer.getDisplayName()));
                 System.out.println(mop.hitVec);
                 position = mop.hitVec;
                 flag = true;
