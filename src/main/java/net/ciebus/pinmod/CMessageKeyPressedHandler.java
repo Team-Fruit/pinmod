@@ -11,11 +11,7 @@ public class CMessageKeyPressedHandler implements IMessageHandler<MessageKeyPres
 
     @Override
     public IMessage onMessage(MessageKeyPressed message, MessageContext ctx) {
-        // EntityPlayer entityPlayer = ctx.getServerHandler().playerEntity;
-        // entityPlayer.addChatComponentMessage(new ChatComponentText(String.format("%s pinned! %d: %f %f %f ", message.playerName, message.dimId,message.x,message.y,message.z)));
-        //PinRenderer.addPin(message.x,message.y,message.z,message.playerName,message.dimId);
         PacketHandler.INSTANCE.sendToAll(message);
-        //PacketHandler.INSTANCE.sendToServer(new MessageKeyPressed(mop.hitVec.xCoord,mop.hitVec.yCoord,mop.hitVec.zCoord, Minecraft.getMinecraft().thePlayer.worldObj.provider.dimensionId,M
         return null;
     }
 }

@@ -6,20 +6,13 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.InputEvent;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.ActiveRenderInfo;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.init.Blocks;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Vec3;
-import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.common.MinecraftForge;
-import org.lwjgl.opengl.GL11;
 
 @Mod(modid = Pin.MODID, version = Pin.VERSION)
 public class Pin {
@@ -27,6 +20,9 @@ public class Pin {
     public static final String VERSION = "1.0";
     public static boolean flag = false;
     public static Vec3 position = null;
+
+    @SidedProxy(clientSide = "net.ciebus.pinmod.ClientProxy", serverSide = "net.ciebus.pinmod.CommonProxy")
+    public static CommonProxy proxy;
 
     @EventHandler
     public void init(FMLInitializationEvent event) {
@@ -37,13 +33,11 @@ public class Pin {
     @EventHandler
     public void load(FMLInitializationEvent event) {
         FMLCommonHandler.instance().bus().register(this);
-        MinecraftForge.EVENT_BUS.register(this);
         FMLCommonHandler.instance().bus().register(new PinRenderer());
         MinecraftForge.EVENT_BUS.register(new PinRenderer());
+        proxy.registerClientInfo();
     }
 
-    @SidedProxy(clientSide = "net.ciebus.pinmod.ClientProxy", serverSide = "net.ciebus.pinmod.CommonProxy")
-    public static CommonProxy proxy;
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {

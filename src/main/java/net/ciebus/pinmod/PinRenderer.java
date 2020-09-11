@@ -16,19 +16,19 @@ import java.util.ArrayList;
 public class PinRenderer {
     private static ArrayList<PinData> pins;
 
-    PinRenderer () {
+    PinRenderer() {
         pins = new ArrayList<PinData>();
     }
 
     public static void addPin(double x, double y, double z, String player, int dimId) {
-        PinData pin = new PinData(x,y,z,player,dimId);
+        PinData pin = new PinData(x, y, z, player, dimId);
         pins.add(pin);
     }
 
 
     @SubscribeEvent
     public void renderPin(RenderWorldLastEvent event) {
-        for(PinData pin : pins) {
+        for (PinData pin : pins) {
             Minecraft.getMinecraft().renderEngine.bindTexture(new ResourceLocation("pinmod", "textures/pin_icon_1.png"));
             Tessellator tess = Tessellator.instance;
             GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
