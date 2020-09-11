@@ -51,13 +51,12 @@ public class Pin {
     }
 
 
-
     @SubscribeEvent
     public void KeyHandlingEvent(InputEvent.KeyInputEvent event) {
-        if (ClientProxy.pinKey.isPressed()) {
-                MovingObjectPosition mop = Minecraft.getMinecraft().renderViewEntity.rayTrace(200, 1.0F);
+        if (ClientProxy.sampleKey.isPressed()) {
+            MovingObjectPosition mop = Minecraft.getMinecraft().renderViewEntity.rayTrace(200, 1.0F);
             if (mop != null) {
-                PacketHandler.INSTANCE.sendToServer(new MessageKeyPressed(mop.hitVec.xCoord,mop.hitVec.yCoord,mop.hitVec.zCoord,Minecraft.getMinecraft().thePlayer.worldObj.provider.dimensionId,Minecraft.getMinecraft().thePlayer.getDisplayName()));
+                PacketHandler.INSTANCE.sendToServer(new MessageKeyPressed(mop.hitVec.xCoord, mop.hitVec.yCoord, mop.hitVec.zCoord, Minecraft.getMinecraft().thePlayer.worldObj.provider.dimensionId, Minecraft.getMinecraft().thePlayer.getDisplayName()));
                 System.out.println(mop.hitVec);
                 position = mop.hitVec;
                 flag = true;
