@@ -3,7 +3,7 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=git,java,forgegradle,intellij,eclipse
 
 ### Minecraft
-
+eclipse
 .gradle
 crash-reports
 logs

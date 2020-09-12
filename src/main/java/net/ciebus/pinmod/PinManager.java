@@ -81,8 +81,8 @@ public class PinManager {
 
             GLU.gluProject((float) pin.x, (float) pin.y, (float) pin.z, modelview, projection, viewport, objectCoords);
 
-            System.out.println((int)objectCoords.get(0) + ":" + (int)objectCoords.get(1) + ":" + (int)objectCoords.get(2) + ":" + (int)objectCoords.get(3));
-            //System.out.printf("Convert [ %6.2f %6.2f %6.2f ] -> Screen [ %4d %4d ]\n", (float) pin.x, (float) pin.y, (float) pin.z, (int)objectCoords.get(0), (int)(objectCoords.get(3) - objectCoords.get(1)));
+            //System.out.println((int)objectCoords.get(0) + ":" + (int)objectCoords.get(1) + ":" + (int)objectCoords.get(2) + ":" + (int)objectCoords.get(3));
+            System.out.printf("Convert [ %6.2f %6.2f %6.2f ] -> Screen [ %4f %4f ]\n", (float) pin.x, (float) pin.y, (float) pin.z, objectCoords.get(0), (objectCoords.get(3) - objectCoords.get(1)));
 
             /*
             double dx = pin.x - Minecraft.getMinecraft().thePlayer.posX;
