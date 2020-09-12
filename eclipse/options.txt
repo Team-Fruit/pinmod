@@ -1,6 +1,6 @@
 invertYMouse:false
 mouseSensitivity:0.5
-fov:0.0
+fov:-0.25
 gamma:0.0
 saturation:0.0
 renderDistance:12
@@ -9,7 +9,7 @@ particles:0
 bobView:true
 anaglyph3d:false
 advancedOpengl:false
-maxFps:120
+maxFps:60
 fboEnable:true
 difficulty:2
 fancyGraphics:true
@@ -85,6 +85,7 @@ key_key.hotbar.6:7
 key_key.hotbar.7:8
 key_key.hotbar.8:9
 key_key.hotbar.9:10
+key_Key.sample:19
 soundCategory_master:0.0
 soundCategory_music:1.0
 soundCategory_record:1.0

@@ -4,31 +4,97 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.ActiveRenderInfo;
+import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.util.glu.GLU;
 
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 import java.util.ArrayList;
 
-public class PinRenderer {
+public class PinManager {
     private static ArrayList<PinData> pins;
 
-    PinRenderer() {
+    public enum pinState {
+        ADD,
+        REMOVE
+    }
+
+    PinManager() {
         pins = new ArrayList<PinData>();
     }
 
     public static void addPin(double x, double y, double z, String player, int dimId) {
+        int i = 0;
+        for (; i < pins.size(); i++) {
+            if (pins.get(i).player.equals(player)) {
+                pins.set(i, new PinData(x, y, z, player, dimId));
+                return;
+            }
+        }
         PinData pin = new PinData(x, y, z, player, dimId);
         pins.add(pin);
     }
 
+    public static void removePin(String player) {
+        for (int i = 0; i < pins.size(); i++) {
+            if (pins.get(i).player.equals(player)) {
+                pins.remove(i);
+                break;
+            }
+        }
+    }
+
+    public static boolean isDelete(double x, double y, double z, String player, int dimId) {
+        int i = 0;
+        for (; i < pins.size(); i++) {
+            if (pins.get(i).player.equals(player)) {
+                if ((int) x == (int) pins.get(i).x && (int) y == (int) pins.get(i).y && (int) z == (int) pins.get(i).z) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+
+    private static IntBuffer viewport = GLAllocation.createDirectIntBuffer(16);
+    private static FloatBuffer modelview = GLAllocation.createDirectFloatBuffer(16);
+    private static FloatBuffer projection = GLAllocation.createDirectFloatBuffer(16);
+    private static FloatBuffer objectCoords = GLAllocation.createDirectFloatBuffer(4);
 
     @SubscribeEvent
     public void renderPin(RenderWorldLastEvent event) {
         for (PinData pin : pins) {
+            if (Minecraft.getMinecraft().theWorld.provider.dimensionId != pin.dimId) return;
+
+            //System.out.println(Minecraft.getMinecraft().gameSettings.fovSetting);
+
+            GL11.glGetFloat(GL11.GL_MODELVIEW_MATRIX, modelview);
+            GL11.glGetFloat(GL11.GL_PROJECTION_MATRIX, projection);
+            GL11.glGetInteger(GL11.GL_VIEWPORT, viewport);
+
+            GLU.gluProject((float) pin.x, (float) pin.y, (float) pin.z, modelview, projection, viewport, objectCoords);
+
+            System.out.println((int)objectCoords.get(0) + ":" + (int)objectCoords.get(1) + ":" + (int)objectCoords.get(2) + ":" + (int)objectCoords.get(3));
+            //System.out.printf("Convert [ %6.2f %6.2f %6.2f ] -> Screen [ %4d %4d ]\n", (float) pin.x, (float) pin.y, (float) pin.z, (int)objectCoords.get(0), (int)(objectCoords.get(3) - objectCoords.get(1)));
+
+            /*
+            double dx = pin.x - Minecraft.getMinecraft().thePlayer.posX;
+            double dy = pin.y - Minecraft.getMinecraft().thePlayer.posY + 1.6;
+            double dz = pin.z - Minecraft.getMinecraft().thePlayer.posZ;
+            dz *= Math.sin(Minecraft.getMinecraft().thePlayer.cameraYaw);
+            dx *= Math.cos(Minecraft.getMinecraft().thePlayer.cameraYaw);
+            dz *= Math.sin(Minecraft.getMinecraft().thePlayer.cameraPitch);
+            dy *= Math.cos(Minecraft.getMinecraft().thePlayer.cameraPitch);
+            System.out.println(dx + ":" + dy + ":" + dz);
+             */
+
             Minecraft.getMinecraft().renderEngine.bindTexture(new ResourceLocation("pinmod", "textures/pin_icon_1.png"));
             Tessellator tess = Tessellator.instance;
             GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);

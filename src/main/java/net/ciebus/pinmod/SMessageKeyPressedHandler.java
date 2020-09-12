@@ -8,7 +8,11 @@ public class SMessageKeyPressedHandler implements IMessageHandler<MessageKeyPres
 
     @Override
     public IMessage onMessage(MessageKeyPressed message, MessageContext ctx) {
-        PinRenderer.addPin(message.x, message.y, message.z, message.playerName, message.dimId);
+        if(!message.state) {
+            PinManager.addPin(message.x, message.y, message.z, message.playerName, message.dimId);
+        } else {
+            PinManager.removePin(message.playerName);
+        }
         return null;
     }
 }

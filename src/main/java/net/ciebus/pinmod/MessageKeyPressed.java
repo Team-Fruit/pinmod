@@ -7,6 +7,7 @@ import net.minecraft.entity.player.EntityPlayer;
 
 public class MessageKeyPressed implements IMessage {
 
+    public boolean state;
     public double x;
     public double y;
     public double z;
@@ -14,9 +15,11 @@ public class MessageKeyPressed implements IMessage {
     public String playerName;
 
 
-    public MessageKeyPressed(){}
+    public MessageKeyPressed() {
+    }
 
-    public MessageKeyPressed(double x,double y, double z, int dimId, String playerName) {
+    public MessageKeyPressed(boolean state, double x, double y, double z, String playerName, int dimId) {
+        this.state = state;
         this.x = x;
         this.y = y;
         this.z = z;
@@ -26,6 +29,7 @@ public class MessageKeyPressed implements IMessage {
 
     @Override
     public void fromBytes(ByteBuf buf) {
+        this.state = buf.readBoolean();
         this.x = buf.readDouble();
         this.y = buf.readDouble();
         this.z = buf.readDouble();
@@ -35,10 +39,11 @@ public class MessageKeyPressed implements IMessage {
 
     @Override
     public void toBytes(ByteBuf buf) {
+        buf.writeBoolean(state);
         buf.writeDouble(x);
         buf.writeDouble(y);
         buf.writeDouble(z);
         buf.writeInt(dimId);
-        ByteBufUtils.writeUTF8String(buf,playerName);
+        ByteBufUtils.writeUTF8String(buf, playerName);
     }
 }
