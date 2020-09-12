@@ -80,9 +80,9 @@ public class PinManager {
         GL11.glPushMatrix();
         Tessellator tess = Tessellator.instance;
         GL11.glDisable(GL11.GL_TEXTURE_2D);
-        GL11.glPointSize(4f);
+        GL11.glPointSize(20f);
         tess.startDrawing(GL11.GL_POINTS);
-        double dy =  (y - Minecraft.getMinecraft().displayHeight / 2f) * 0.9f;
+        double dy =  (y - Minecraft.getMinecraft().displayHeight / 2f) ;
         tess.addVertex( x , -1 * dy + Minecraft.getMinecraft().displayHeight / 2f,0);
         // System.out.println(event.resolution.getScaledHeight() + " W:" + event.resolution.getScaledWidth());
         tess.draw();
@@ -101,7 +101,7 @@ public class PinManager {
             GL11.glGetFloat(GL11.GL_PROJECTION_MATRIX, projection);
             GL11.glGetInteger(GL11.GL_VIEWPORT, viewport);
             EntityPlayer p = Minecraft.getMinecraft().thePlayer;
-            GLU.gluProject((float) pin.x - (float)p.posX, (float) (pin.y + 1.6f - p.posY + p.getEyeHeight()),(float) pin.z - (float)p.posZ, modelview, projection, viewport, objectCoords);
+            GLU.gluProject((float) pin.x - (float)p.posX, (float) (pin.y + 1.5f - p.posY + p.getEyeHeight()),(float) pin.z - (float)p.posZ, modelview, projection, viewport, objectCoords);
             x = objectCoords.get(0);
             y = objectCoords.get(1);
             //System.out.println((int)objectCoords.get(0) + ":" + (int)objectCoords.get(1) + ":" + (int)objectCoords.get(2) + ":" + (int)objectCoords.get(3));
