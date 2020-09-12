@@ -11,6 +11,7 @@ saves
 .idea
 config
 options.txt
+usernamecache.json
 
 # Files from Forge MDK
 forge*changelog.txt
