@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Vec3;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import org.lwjgl.Sys;
@@ -76,16 +77,16 @@ public class PinManager {
 
     @SubscribeEvent
     public void renderTest(RenderGameOverlayEvent.Post event) {
-
+        double dy = (y - Minecraft.getMinecraft().displayHeight / 2f);
+        System.out.println(x + ":" + y);
+        if(x * event.resolution.getScaledHeight() / (float)Minecraft.getMinecraft().displayHeight < 0 || (-dy + Minecraft.getMinecraft().displayHeight / 2f) * event.resolution.getScaledWidth() / (float)Minecraft.getMinecraft().displayWidth < 0) return;
         GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
         GL11.glPushMatrix();
         Tessellator tess = Tessellator.instance;
         GL11.glDisable(GL11.GL_TEXTURE_2D);
         GL11.glPointSize(20f);
         tess.startDrawing(GL11.GL_POINTS);
-        double dy = (y - Minecraft.getMinecraft().displayHeight / 2f) ;
         tess.addVertex(x * event.resolution.getScaledHeight() / (float)Minecraft.getMinecraft().displayHeight, (-dy + Minecraft.getMinecraft().displayHeight / 2f) * event.resolution.getScaledWidth() / (float)Minecraft.getMinecraft().displayWidth , 0);
-        // System.out.println(event.resolution.getScaledHeight() + " W:" + event.resolution.getScaledWidth());
         tess.draw();
         GL11.glPopMatrix();
         GL11.glPopAttrib();
@@ -93,31 +94,28 @@ public class PinManager {
 
     @SubscribeEvent
     public void renderPin(RenderWorldLastEvent event) {
+        float partialTicks = event.partialTicks;
         for (PinData pin : pins) {
             if (Minecraft.getMinecraft().theWorld.provider.dimensionId != pin.dimId) return;
 
-            //System.out.println(Minecraft.getMinecraft().gameSettings.fovSetting);
 
             GL11.glGetFloat(GL11.GL_MODELVIEW_MATRIX, modelview);
             GL11.glGetFloat(GL11.GL_PROJECTION_MATRIX, projection);
             GL11.glGetInteger(GL11.GL_VIEWPORT, viewport);
             EntityPlayer p = Minecraft.getMinecraft().thePlayer;
-            GLU.gluProject((float) pin.x - (float) p.posX, (float) (pin.y + 1.5f - p.posY + p.getEyeHeight()), (float) pin.z - (float) p.posZ, modelview, projection, viewport, objectCoords);
+
+            double dx = p.prevPosX + (p.posX - p.prevPosX) * partialTicks;
+            double dy = p.prevPosY + (p.posY - p.prevPosY) * partialTicks - p.yOffset;
+            double dz = p.prevPosZ + (p.posZ - p.prevPosZ) * partialTicks;
+
+            GLU.gluProject(
+                    (float) (pin.x - dx),
+                    (float) (pin.y - dy),
+                    (float) (pin.z - dz),
+                    modelview, projection, viewport, objectCoords);
             x = objectCoords.get(0);
             y = objectCoords.get(1);
-            //System.out.println((int)objectCoords.get(0) + ":" + (int)objectCoords.get(1) + ":" + (int)objectCoords.get(2) + ":" + (int)objectCoords.get(3));
-            // System.out.printf("Convert [ %6.2f %6.2f %6.2f ] -> Screen [ %4f %4f ]\n", (float) pin.x, (float) pin.y, (float) pin.z, objectCoords.get(0), objectCoords.get(1));
 
-            /*
-            double dx = pin.x - Minecraft.getMinecraft().thePlayer.posX;
-            double dy = pin.y - Minecraft.getMinecraft().thePlayer.posY + 1.6;
-            double dz = pin.z - Minecraft.getMinecraft().thePlayer.posZ;
-            dz *= Math.sin(Minecraft.getMinecraft().thePlayer.cameraYaw);
-            dx *= Math.cos(Minecraft.getMinecraft().thePlayer.cameraYaw);
-            dz *= Math.sin(Minecraft.getMinecraft().thePlayer.cameraPitch);
-            dy *= Math.cos(Minecraft.getMinecraft().thePlayer.cameraPitch);
-            System.out.println(dx + ":" + dy + ":" + dz);
-             */
 
             Minecraft.getMinecraft().renderEngine.bindTexture(new ResourceLocation("pinmod", "textures/pin_icon_1.png"));
             Tessellator tess = Tessellator.instance;
