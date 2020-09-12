@@ -42,7 +42,7 @@ public class Pin {
 
 
     @SubscribeEvent
-    public void KeyHandlingEvent(InputEvent.KeyInputEvent event) {
+    public void KeyHandlingEvent(InputEvent event) {
         if (ClientProxy.sampleKey.isPressed()) {
             MovingObjectPosition mop = Minecraft.getMinecraft().renderViewEntity.rayTrace(200, 1.0F);
             if (mop != null) {
