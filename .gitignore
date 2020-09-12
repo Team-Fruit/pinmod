@@ -10,6 +10,7 @@ logs
 saves
 .idea
 config
+options.txt
 
 # Files from Forge MDK
 forge*changelog.txt
