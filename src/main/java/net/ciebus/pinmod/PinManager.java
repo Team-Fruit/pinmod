@@ -11,8 +11,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
+import org.lwjgl.Sys;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
+import scala.collection.parallel.ParIterableLike;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -67,7 +69,7 @@ public class PinManager {
     private static IntBuffer viewport = GLAllocation.createDirectIntBuffer(16);
     private static FloatBuffer modelview = GLAllocation.createDirectFloatBuffer(16);
     private static FloatBuffer projection = GLAllocation.createDirectFloatBuffer(16);
-    private static FloatBuffer objectCoords = GLAllocation.createDirectFloatBuffer(4);
+    private static FloatBuffer objectCoords = GLAllocation.createDirectFloatBuffer(16);
 
     public double x = 0;
     public double y = 0;
@@ -80,7 +82,9 @@ public class PinManager {
         GL11.glDisable(GL11.GL_TEXTURE_2D);
         GL11.glPointSize(4f);
         tess.startDrawing(GL11.GL_POINTS);
-        tess.addVertex( x , y,0);
+        double dy =  (y - Minecraft.getMinecraft().displayHeight / 2f) * 0.9f;
+        tess.addVertex( x , -1 * dy + Minecraft.getMinecraft().displayHeight / 2f,0);
+        // System.out.println(event.resolution.getScaledHeight() + " W:" + event.resolution.getScaledWidth());
         tess.draw();
         GL11.glPopMatrix();
         GL11.glPopAttrib();
@@ -96,12 +100,12 @@ public class PinManager {
             GL11.glGetFloat(GL11.GL_MODELVIEW_MATRIX, modelview);
             GL11.glGetFloat(GL11.GL_PROJECTION_MATRIX, projection);
             GL11.glGetInteger(GL11.GL_VIEWPORT, viewport);
-
-            GLU.gluProject((float) pin.x, (float) pin.y, (float) pin.z, modelview, projection, viewport, objectCoords);
+            EntityPlayer p = Minecraft.getMinecraft().thePlayer;
+            GLU.gluProject((float) pin.x - (float)p.posX, (float) (pin.y + 1.6f - p.posY + p.getEyeHeight()),(float) pin.z - (float)p.posZ, modelview, projection, viewport, objectCoords);
             x = objectCoords.get(0);
             y = objectCoords.get(1);
             //System.out.println((int)objectCoords.get(0) + ":" + (int)objectCoords.get(1) + ":" + (int)objectCoords.get(2) + ":" + (int)objectCoords.get(3));
-            System.out.printf("Convert [ %6.2f %6.2f %6.2f ] -> Screen [ %4f %4f ]\n", (float) pin.x, (float) pin.y, (float) pin.z, objectCoords.get(0), objectCoords.get(1));
+            // System.out.printf("Convert [ %6.2f %6.2f %6.2f ] -> Screen [ %4f %4f ]\n", (float) pin.x, (float) pin.y, (float) pin.z, objectCoords.get(0), objectCoords.get(1));
 
             /*
             double dx = pin.x - Minecraft.getMinecraft().thePlayer.posX;
