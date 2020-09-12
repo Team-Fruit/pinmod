@@ -1,12 +1,12 @@
 invertYMouse:false
 mouseSensitivity:0.2746479
-fov:1.0
+fov:0.0
 gamma:0.0
 saturation:0.0
 renderDistance:12
 guiScale:0
 particles:0
-bobView:true
+bobView:false
 anaglyph3d:false
 advancedOpengl:false
 maxFps:120

@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
@@ -68,6 +69,23 @@ public class PinManager {
     private static FloatBuffer projection = GLAllocation.createDirectFloatBuffer(16);
     private static FloatBuffer objectCoords = GLAllocation.createDirectFloatBuffer(4);
 
+    public double x = 0;
+    public double y = 0;
+    @SubscribeEvent
+    public void renderTest(RenderGameOverlayEvent.Post event) {
+
+        GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
+        GL11.glPushMatrix();
+        Tessellator tess = Tessellator.instance;
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        GL11.glPointSize(4f);
+        tess.startDrawing(GL11.GL_POINTS);
+        tess.addVertex( x , y,0);
+        tess.draw();
+        GL11.glPopMatrix();
+        GL11.glPopAttrib();
+    }
+
     @SubscribeEvent
     public void renderPin(RenderWorldLastEvent event) {
         for (PinData pin : pins) {
@@ -80,9 +98,10 @@ public class PinManager {
             GL11.glGetInteger(GL11.GL_VIEWPORT, viewport);
 
             GLU.gluProject((float) pin.x, (float) pin.y, (float) pin.z, modelview, projection, viewport, objectCoords);
-
+            x = objectCoords.get(0);
+            y = objectCoords.get(1);
             //System.out.println((int)objectCoords.get(0) + ":" + (int)objectCoords.get(1) + ":" + (int)objectCoords.get(2) + ":" + (int)objectCoords.get(3));
-            System.out.printf("Convert [ %6.2f %6.2f %6.2f ] -> Screen [ %4f %4f ]\n", (float) pin.x, (float) pin.y, (float) pin.z, objectCoords.get(0), (objectCoords.get(3) - objectCoords.get(1)));
+            System.out.printf("Convert [ %6.2f %6.2f %6.2f ] -> Screen [ %4f %4f ]\n", (float) pin.x, (float) pin.y, (float) pin.z, objectCoords.get(0), objectCoords.get(1));
 
             /*
             double dx = pin.x - Minecraft.getMinecraft().thePlayer.posX;
