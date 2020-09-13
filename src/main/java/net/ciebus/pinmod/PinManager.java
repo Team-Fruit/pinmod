@@ -16,6 +16,7 @@ import org.lwjgl.Sys;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
 import scala.collection.parallel.ParIterableLike;
+import scala.xml.dtd.MIXED;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -71,25 +72,63 @@ public class PinManager {
     private static FloatBuffer modelview = GLAllocation.createDirectFloatBuffer(16);
     private static FloatBuffer projection = GLAllocation.createDirectFloatBuffer(16);
     private static FloatBuffer objectCoords = GLAllocation.createDirectFloatBuffer(16);
+    private static FloatBuffer dobjectCoords = GLAllocation.createDirectFloatBuffer(16);
 
-    public double x = 0;
-    public double y = 0;
+    float ny = 0f;
 
     @SubscribeEvent
     public void renderTest(RenderGameOverlayEvent.Post event) {
-        double dy = (y - Minecraft.getMinecraft().displayHeight / 2f);
-        System.out.println(x + ":" + y);
-        if(x * event.resolution.getScaledHeight() / (float)Minecraft.getMinecraft().displayHeight < 0 || (-dy + Minecraft.getMinecraft().displayHeight / 2f) * event.resolution.getScaledWidth() / (float)Minecraft.getMinecraft().displayWidth < 0) return;
-        GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
-        GL11.glPushMatrix();
-        Tessellator tess = Tessellator.instance;
-        GL11.glDisable(GL11.GL_TEXTURE_2D);
-        GL11.glPointSize(20f);
-        tess.startDrawing(GL11.GL_POINTS);
-        tess.addVertex(x * event.resolution.getScaledHeight() / (float)Minecraft.getMinecraft().displayHeight, (-dy + Minecraft.getMinecraft().displayHeight / 2f) * event.resolution.getScaledWidth() / (float)Minecraft.getMinecraft().displayWidth , 0);
-        tess.draw();
-        GL11.glPopMatrix();
-        GL11.glPopAttrib();
+        float partialTicks = event.partialTicks;
+        for (PinData pin : pins) {
+            float dy = (pin.dy - Minecraft.getMinecraft().displayHeight / 2f);
+            Tessellator tess = Tessellator.instance;
+            GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
+
+
+            if (!pin.isVisible || pin.dx < 0 || pin.dy < 0 || pin.dx > Minecraft.getMinecraft().displayWidth || pin.dy > Minecraft.getMinecraft().displayHeight) {
+
+
+                EntityPlayer p = Minecraft.getMinecraft().thePlayer;
+                double ddx = p.prevPosX + (p.posX - p.prevPosX) * partialTicks;
+                double ddy = p.prevPosY + (p.posY - p.prevPosY) * partialTicks - p.yOffset;
+                double ddz = p.prevPosZ + (p.posZ - p.prevPosZ) * partialTicks;
+
+
+
+                Vec3 vec = Vec3.createVectorHelper((float) (pin.x - ddx), (float) (pin.y - dy), (float) (pin.z - ddz)).normalize();
+                //Vec3 pvec = Minecraft.getMinecraft().renderViewEntity.rayTrace(200, 1.0F).hitVec.normalize();
+                Vec3 pvec = Minecraft.getMinecraft().thePlayer.getLookVec().normalize();
+
+                System.out.println(vec.xCoord * pvec.xCoord + vec.zCoord * pvec.zCoord);
+
+                GL11.glPushMatrix();
+                GL11.glDisable(GL11.GL_TEXTURE_2D);
+                GL11.glPointSize(20f);
+                tess.startDrawing(GL11.GL_POINTS);
+
+                if(vec.subtract(pvec).xCoord < 0) {
+                    tess.addVertex(0, -(ny - Minecraft.getMinecraft().displayHeight / 2f) + Minecraft.getMinecraft().displayHeight / 2f, 0);
+                } else {
+                    tess.addVertex(Minecraft.getMinecraft().displayWidth, -(ny - Minecraft.getMinecraft().displayHeight / 2f) + Minecraft.getMinecraft().displayHeight / 2f, 0);
+                }
+
+
+                tess.draw();
+                GL11.glPopMatrix();
+                GL11.glPopAttrib();
+            } else {
+                if (pin.dx * event.resolution.getScaledHeight() / (float) Minecraft.getMinecraft().displayHeight < 0 || (-dy + Minecraft.getMinecraft().displayHeight / 2f) * event.resolution.getScaledWidth() / (float) Minecraft.getMinecraft().displayWidth < 0)
+                    return;
+                GL11.glPushMatrix();
+                GL11.glDisable(GL11.GL_TEXTURE_2D);
+                GL11.glPointSize(20f);
+                tess.startDrawing(GL11.GL_POINTS);
+                tess.addVertex(pin.dx * event.resolution.getScaledHeight() / (float) Minecraft.getMinecraft().displayHeight, (-dy + Minecraft.getMinecraft().displayHeight / 2f) * event.resolution.getScaledWidth() / (float) Minecraft.getMinecraft().displayWidth, 0);
+                tess.draw();
+                GL11.glPopMatrix();
+                GL11.glPopAttrib();
+            }
+        }
     }
 
     @SubscribeEvent
@@ -97,7 +136,6 @@ public class PinManager {
         float partialTicks = event.partialTicks;
         for (PinData pin : pins) {
             if (Minecraft.getMinecraft().theWorld.provider.dimensionId != pin.dimId) return;
-
 
             GL11.glGetFloat(GL11.GL_MODELVIEW_MATRIX, modelview);
             GL11.glGetFloat(GL11.GL_PROJECTION_MATRIX, projection);
@@ -113,8 +151,22 @@ public class PinManager {
                     (float) (pin.y - dy),
                     (float) (pin.z - dz),
                     modelview, projection, viewport, objectCoords);
-            x = objectCoords.get(0);
-            y = objectCoords.get(1);
+
+            GLU.gluProject(
+                    (float) (Minecraft.getMinecraft().renderViewEntity.rayTrace(200, 1.0F).hitVec.xCoord - dx),
+                    (float) (pin.y - dy),
+                    (float) (Minecraft.getMinecraft().renderViewEntity.rayTrace(200, 1.0F).hitVec.zCoord - dz),
+                    modelview, projection, viewport, dobjectCoords);
+
+            ny = dobjectCoords.get(1);
+
+            Vec3 vec = Vec3.createVectorHelper((float) (pin.x - dx), (float) (pin.y - dy), (float) (pin.z - dz)).normalize();
+            Vec3 pvec = Minecraft.getMinecraft().thePlayer.getLookVec();
+
+
+            pin.update((int) objectCoords.get(0), (int) objectCoords.get(1));
+            //System.out.println((int) objectCoords.get(0) + ":" + (int) objectCoords.get(1));
+            pin.update(vec.xCoord * pvec.xCoord + vec.zCoord * pvec.zCoord > 0);
 
 
             Minecraft.getMinecraft().renderEngine.bindTexture(new ResourceLocation("pinmod", "textures/pin_icon_1.png"));
@@ -190,11 +242,27 @@ class PinData {
     public String player;
     public int dimId;
 
+    public boolean isVisible;
+    public int dx;
+    public int dy;
+
     public PinData(double x, double y, double z, String player, int dimId) {
         this.x = x;
         this.y = y;
         this.z = z;
         this.player = player;
         this.dimId = dimId;
+        dx = 0;
+        dy = 0;
+        isVisible = false;
+    }
+
+    public void update(int dx, int dy) {
+        this.dx = dx;
+        this.dy = dy;
+    }
+
+    public void update(boolean isVisible) {
+        this.isVisible = isVisible;
     }
 }
