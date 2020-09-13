@@ -98,15 +98,19 @@ public class PinManager {
                 Vec3 vec = Vec3.createVectorHelper((float) (pin.x - ddx), (float) (pin.y - dy), (float) (pin.z - ddz)).normalize();
                 //Vec3 pvec = Minecraft.getMinecraft().renderViewEntity.rayTrace(200, 1.0F).hitVec.normalize();
                 Vec3 pvec = Minecraft.getMinecraft().thePlayer.getLookVec().normalize();
+                Vec3 rpvec = Minecraft.getMinecraft().thePlayer.getLookVec().normalize();
+                rpvec.rotateAroundY(-90f);
 
-                System.out.println(vec.xCoord * pvec.xCoord + vec.zCoord * pvec.zCoord);
+                double pcos =  (vec.xCoord * pvec.xCoord + vec.zCoord * pvec.zCoord);
+                double rpcos = (vec.xCoord * rpvec.xCoord + vec.zCoord * rpvec.zCoord);
+                System.out.println((vec.xCoord * pvec.xCoord + vec.zCoord * pvec.zCoord) + ":" + (vec.xCoord * rpvec.xCoord + vec.zCoord * rpvec.zCoord));
 
                 GL11.glPushMatrix();
                 GL11.glDisable(GL11.GL_TEXTURE_2D);
                 GL11.glPointSize(20f);
                 tess.startDrawing(GL11.GL_POINTS);
 
-                if(vec.subtract(pvec).xCoord < 0) {
+                if(rpcos < 0) {
                     tess.addVertex(0, -(ny - Minecraft.getMinecraft().displayHeight / 2f) + Minecraft.getMinecraft().displayHeight / 2f, 0);
                 } else {
                     tess.addVertex(Minecraft.getMinecraft().displayWidth, -(ny - Minecraft.getMinecraft().displayHeight / 2f) + Minecraft.getMinecraft().displayHeight / 2f, 0);
