@@ -82,8 +82,19 @@ public class PinManager {
     public void renderTest(RenderGameOverlayEvent.Post event) {
         float partialTicks = event.partialTicks;
         for (PinData pin : pins) {
-            float dy = (pin.dy - Minecraft.getMinecraft().displayHeight / 2f);
+            double dy = (pin.dy - Minecraft.getMinecraft().displayHeight / 2f);
             Tessellator tess = Tessellator.instance;
+
+            Minecraft.getMinecraft().renderEngine.bindTexture(new ResourceLocation("pinmod", "textures/pin_icon_1.png"));
+            GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
+            GL11.glPushMatrix();
+            tess.startDrawing(GL11.GL_QUADS);
+
+            double var12 = 0.3d;
+
+//            tess.draw();
+
+/*
             GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
             GL11.glPushMatrix();
             GL11.glDisable(GL11.GL_TEXTURE_2D);
@@ -91,20 +102,60 @@ public class PinManager {
 
             GL11.glPointSize(20f);
             tess.startDrawing(GL11.GL_POINTS);
-            double scale2d = vtmp.yCoord / vtmp.zCoord;
-            double x0 = event.resolution.getScaledWidth_double() / 2 - (event.resolution.getScaledWidth_double() / 2) * scale2d;
-            double y0 = event.resolution.getScaledHeight_double() / 2 + (event.resolution.getScaledHeight_double() / 2) * scale2d;
-            double xmax = event.resolution.getScaledWidth_double() / 2 + (event.resolution.getScaledWidth_double() / 2) * scale2d;
-            double ymax = event.resolution.getScaledHeight_double() / 2 - (event.resolution.getScaledHeight_double() / 2) * scale2d;
+ */
+            double scale2d = -pin.dy / pin.dx;
+            double scale2dd = -pin.dx / pin.dy;
+            double x0 = (event.resolution.getScaledHeight_double() / 2) + ((event.resolution.getScaledWidth_double() / 2) * scale2d);
+            double y0 = (event.resolution.getScaledWidth_double() / 2) + (event.resolution.getScaledHeight_double() / 2) * scale2dd;
+            double xmax = event.resolution.getScaledHeight_double() / 2 - (event.resolution.getScaledWidth_double() / 2) * scale2d;
+            double ymax = event.resolution.getScaledWidth_double() / 2 - (event.resolution.getScaledHeight_double() / 2) * scale2dd;
 
-            System.out.println(x0 + ":" + y0 + ":" + xmax + ":" + ymax);
+
+            if (pin.dx > 0) {
+                //tess.addVertex(event.resolution.getScaledWidth(), xmax, 0);
+                //右
+                tess.addVertexWithUV(event.resolution.getScaledWidth() + 50, xmax + 50, 0, (double) 1, (double) 1);
+                tess.addVertexWithUV(event.resolution.getScaledWidth() + 50, xmax - 50, 0, (double) 1, (double) 0);
+                tess.addVertexWithUV(event.resolution.getScaledWidth() - 50, xmax - 50, 0, (double) 0, (double) 0);
+                tess.addVertexWithUV(event.resolution.getScaledWidth() - 50, xmax + 50, 0, (double) 0, (double) 1);
+
+            } else {
+                //tess.addVertex(0, x0, 0);
+                //左
+                tess.addVertexWithUV(50, x0 + 50, 0, (double) 1, (double) 1);
+                tess.addVertexWithUV(50, x0 - 50, 0, (double) 1, (double) 0);
+                tess.addVertexWithUV(-50, x0 - 50, 0, (double) 0, (double) 0);
+                tess.addVertexWithUV(-50, x0 + 50, 0, (double) 0, (double) 1);
+
+            }
+            if (pin.dy > 0) {
+                //tess.addVertex(ymax, event.resolution.getScaledHeight(), 0);
+                //下
+                tess.addVertexWithUV(ymax + 50, event.resolution.getScaledHeight() + 50, 0, (double) 1, (double) 1);
+                tess.addVertexWithUV(ymax + 50, event.resolution.getScaledHeight() - 50, 0, (double) 1, (double) 0);
+                tess.addVertexWithUV(ymax - 50, event.resolution.getScaledHeight() - 50, 0, (double) 0, (double) 0);
+                tess.addVertexWithUV(ymax - 50, event.resolution.getScaledHeight() + 50, 0, (double) 0, (double) 1);
+            } else {
+                //tess.addVertex(y0, 0, 0);
+                //上
+                tess.addVertexWithUV(y0 + 50, 50, 0, (double) 1, (double) 1);
+                tess.addVertexWithUV(y0 + 50, -50, 0, (double) 1, (double) 0);
+                tess.addVertexWithUV(y0 - 50, -50, 0, (double) 0, (double) 0);
+                tess.addVertexWithUV(y0 - 50, 50, 0, (double) 0, (double) 1);
+
+            }
+
+
+            //System.out.println((event.resolution.getScaledWidth_double() / 2));
+            //System.out.println(scale2d + ":" + scale2dd + ":" + x0 + ":" + y0 + ":" + xmax + ":" + ymax);
 
             tess.draw();
 
+            GL11.glDisable(GL11.GL_TEXTURE_2D);
             GL11.glPointSize(100f);
             tess.startDrawing(GL11.GL_LINES);
             tess.addVertex(event.resolution.getScaledWidth() / 2d, event.resolution.getScaledHeight() / 2d, 0);
-            tess.addVertex(event.resolution.getScaledWidth() / 2d + vtmp.xCoord * 10000, event.resolution.getScaledHeight() / 2d + vtmp.yCoord * 10000, 0);
+            tess.addVertex(event.resolution.getScaledWidth() / 2d + pin.dx * 10000, event.resolution.getScaledHeight() / 2d + pin.dy * 10000, 0);
             tess.draw();
 
             if (!pin.isVisible || pin.dx < 0 || pin.dy < 0 || pin.dx > Minecraft.getMinecraft().displayWidth || pin.dy > Minecraft.getMinecraft().displayHeight) {
@@ -126,18 +177,6 @@ public class PinManager {
                 double rpcos = (vec.xCoord * rpvec.xCoord + vec.zCoord * rpvec.zCoord);
                 // System.out.println((vec.xCoord * pvec.xCoord + vec.zCoord * pvec.zCoord) + ":" + (vec.xCoord * rpvec.xCoord + vec.zCoord * rpvec.zCoord));
 
-                GL11.glDisable(GL11.GL_TEXTURE_2D);
-                GL11.glPointSize(20f);
-                tess.startDrawing(GL11.GL_POINTS);
-
-                if (rpcos < 0) {
-                    tess.addVertex(0, -(ny - Minecraft.getMinecraft().displayHeight / 2f) + Minecraft.getMinecraft().displayHeight / 2f, 0);
-                } else {
-                    tess.addVertex(Minecraft.getMinecraft().displayWidth, -(ny - Minecraft.getMinecraft().displayHeight / 2f) + Minecraft.getMinecraft().displayHeight / 2f, 0);
-                }
-
-
-                tess.draw();
                 GL11.glPopMatrix();
                 GL11.glPopAttrib();
             } else {
@@ -146,7 +185,7 @@ public class PinManager {
                 GL11.glDisable(GL11.GL_TEXTURE_2D);
                 GL11.glPointSize(20f);
                 tess.startDrawing(GL11.GL_POINTS);
-                tess.addVertex(pin.dx * event.resolution.getScaledHeight() / (float) Minecraft.getMinecraft().displayHeight, (-dy + Minecraft.getMinecraft().displayHeight / 2f) * event.resolution.getScaledWidth() / (float) Minecraft.getMinecraft().displayWidth, 0);
+                //  tess.addVertex(pin.dx * event.resolution.getScaledHeight() / (float) Minecraft.getMinecraft().displayHeight, (-dy + Minecraft.getMinecraft().displayHeight / 2f) * event.resolution.getScaledWidth() / (float) Minecraft.getMinecraft().displayWidth, 0);
                 tess.draw();
                 GL11.glPopMatrix();
                 GL11.glPopAttrib();
@@ -176,27 +215,27 @@ public class PinManager {
                     modelview, projection, viewport, objectCoords);
 
             Vec3 vec = Vec3.createVectorHelper((float) (pin.x - dx), (float) (pin.y - dy), (float) (pin.z - dz)).normalize();
-            Vec3 pvec = Vec3.createVectorHelper(Minecraft.getMinecraft().thePlayer.getLookVec().xCoord, Minecraft.getMinecraft().thePlayer.getLookVec().yCoord, Minecraft.getMinecraft().thePlayer.getLookVec().zCoord);
+            Vec3 pvec = Vec3.createVectorHelper(Minecraft.getMinecraft().thePlayer.getLookVec().xCoord+ 0.0001d, Minecraft.getMinecraft().thePlayer.getLookVec().yCoord+ 0.0001d, Minecraft.getMinecraft().thePlayer.getLookVec().zCoord+ 0.0001d);
+            //Vec3 pvec = Vec3.createVectorHelper(0,0,0);
 
             //System.out.println(vec.subtract(pvec).normalize().toString());
-            vtmp = vec.subtract(pvec).normalize();
+            Vec3 ptmpvec = vec.subtract(pvec).normalize();
 
-            Vector3d v = new Vector3d(vtmp.xCoord * 1, vtmp.yCoord * 1, vtmp.zCoord * 1);
-            Vector3d pv = new Vector3d(p.getLookVec().xCoord, 0, p.getLookVec().zCoord);
-            double pvangle = pv.angle(new Vector3d(1, 0, 0));
-            double pvangle2 = pv.angle(new Vector3d(0, 0, 1));
+            Vector3d v = new Vector3d(ptmpvec.xCoord * 1 + 0.0001d, ptmpvec.yCoord * 1 + 0.0001d, ptmpvec.zCoord * 1 + 0.0001d);
+            Vector3d pv = new Vector3d(p.getLookVec().xCoord + 0.0001d, 0, p.getLookVec().zCoord + 0.0001d);
+            double pvangle = pv.angle(new Vector3d(1 + 0.0001d, 0 + 0.0001d, 0 + 0.0001d));
+            double pvangle2 = pv.angle(new Vector3d(0 + 0.0001d, 0 + 0.0001d, 1 + 0.0001d));
             double cpvangle = (pvangle2 / Math.PI) * 180 < 90 ? pvangle : -pvangle;
             //System.out.println((pvangle / Math.PI) * 180 + ":" + (pvangle2 / Math.PI) * 180 + ":" + (cpvangle / Math.PI) * 180);
             Matrix3d m = new Matrix3d();
-            m.rotY(cpvangle - Math.PI / 2);
-            //v.add(new Vector3d(-Minecraft.getMinecraft().thePlayer.getLookVec().xCoord,-Minecraft.getMinecraft().thePlayer.getLookVec().yCoord,-Minecraft.getMinecraft().thePlayer.getLookVec().zCoord));
+            m.rotY(cpvangle - Math.PI / 2 + 0.0001d);
             m.transform(v);
-            vtmp.xCoord = v.x;
-            vtmp.yCoord = v.y;
+            //vtmp.xCoord = v.x;
+            //vtmp.yCoord = v.y;
 
             // v.
 
-            pin.update((int) objectCoords.get(0), (int) objectCoords.get(1));
+            pin.update(v.x, v.y);
             pin.update(vec.xCoord * pvec.xCoord + vec.zCoord * pvec.zCoord > 0);
 
             Vec3 cpvec = Minecraft.getMinecraft().thePlayer.getLookVec();
@@ -281,8 +320,8 @@ class PinData {
     public int dimId;
 
     public boolean isVisible;
-    public int dx;
-    public int dy;
+    public double dx;
+    public double dy;
 
     public PinData(double x, double y, double z, String player, int dimId) {
         this.x = x;
@@ -295,7 +334,7 @@ class PinData {
         isVisible = false;
     }
 
-    public void update(int dx, int dy) {
+    public void update(double dx, double dy) {
         this.dx = dx;
         this.dy = dy;
     }
