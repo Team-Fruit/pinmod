@@ -57,27 +57,40 @@ public class PinRenderer {
             (float) (pin.y - dy),
             (float) (pin.z - dz),
             modelview, projection, viewport, objectCoords);
-
+        //pin Vector
         Vec3 vec = Vec3.createVectorHelper((float) (pin.x - dx), (float) (pin.y - dy), (float) (pin.z - dz)).normalize();
-        Vec3 pvec = Vec3.createVectorHelper(Minecraft.getMinecraft().thePlayer.getLookVec().xCoord + 0.0001d, Minecraft.getMinecraft().thePlayer.getLookVec().yCoord + 0.0001d, Minecraft.getMinecraft().thePlayer.getLookVec().zCoord + 0.0001d);
+        //player Vector
+        Vec3 pvec = Vec3.createVectorHelper(Minecraft.getMinecraft().thePlayer.getLookVec().xCoord, Minecraft.getMinecraft().thePlayer.getLookVec().yCoord, Minecraft.getMinecraft().thePlayer.getLookVec().zCoord);
+
+
+        Vector3d vecd = new Vector3d((float) (pin.x - dx), (float) (pin.y - dy), (float) (pin.z - dz));
+        vecd.normalize();
+        Vector3d pvecd = new Vector3d(Minecraft.getMinecraft().thePlayer.getLookVec().xCoord, Minecraft.getMinecraft().thePlayer.getLookVec().yCoord, Minecraft.getMinecraft().thePlayer.getLookVec().zCoord);
+        pvecd.normalize();
+
+        double bl = vecd.dot(pvecd);
+        pvecd.scale(Math.abs(bl));
+        Vector3d subvec = new Vector3d();
+        subvec.sub(vecd, pvecd);
+        //System.out.println(bl);
+
         //Vec3 pvec = Vec3.createVectorHelper(0,0,0);
 
         //System.out.println(vec.subtract(pvec).normalize().toString());
-        Vec3 ptmpvec = vec.subtract(pvec).normalize();
+        Vec3 ptmpvec = Vec3.createVectorHelper(-subvec.x, -subvec.y, -subvec.z);
 
-        Vector3d v = new Vector3d(ptmpvec.xCoord * 1 + 0.0001d, ptmpvec.yCoord * 1 + 0.0001d, ptmpvec.zCoord * 1 + 0.0001d);
-        Vector3d pv = new Vector3d(p.getLookVec().xCoord + 0.0001d, 0, p.getLookVec().zCoord + 0.0001d);
-        double pvangle = pv.angle(new Vector3d(1 + 0.0001d, 0 + 0.0001d, 0 + 0.0001d));
-        double pvangle2 = pv.angle(new Vector3d(0 + 0.0001d, 0 + 0.0001d, 1 + 0.0001d));
+        Vector3d v = new Vector3d(ptmpvec.xCoord * 1, ptmpvec.yCoord * 1, ptmpvec.zCoord * 1);
+        Vector3d pv = new Vector3d(p.getLookVec().xCoord, 0, p.getLookVec().zCoord);
+        double pvangle = pv.angle(new Vector3d(1, 0, 0));
+        double pvangle2 = pv.angle(new Vector3d(0, 0, 1));
         double cpvangle = (pvangle2 / Math.PI) * 180 < 90 ? pvangle : -pvangle;
         //System.out.println((pvangle / Math.PI) * 180 + ":" + (pvangle2 / Math.PI) * 180 + ":" + (cpvangle / Math.PI) * 180);
         Matrix3d m = new Matrix3d();
-        m.rotY(cpvangle - Math.PI / 2 + 0.0001d);
+        m.rotY(cpvangle - Math.PI / 2);
         m.transform(v);
         //vtmp.xCoord = v.x;
         //vtmp.yCoord = v.y;
-
-        // v.
+        //System.out.println(((double) v.y) / v.x);
 
         pin.update(v.x, v.y);
         pin.update(vec.xCoord * pvec.xCoord + vec.zCoord * pvec.zCoord > 0);
@@ -185,41 +198,93 @@ public class PinRenderer {
             double xmax = event.resolution.getScaledHeight_double() / 2 - (event.resolution.getScaledWidth_double() / 2) * scale2d;
             double ymax = event.resolution.getScaledWidth_double() / 2 - (event.resolution.getScaledHeight_double() / 2) * scale2dd;
 
+            double guiX = 0d;
+            double guiY = 0d;
+
+            double iconsize = 10d;
+
+            if (scale2d > 0 && scale2d < 2 && pin.dx > 0) {
+                guiX = event.resolution.getScaledWidth() - iconsize;
+                guiY = iconsize;
+            } else if (scale2d < 0 && scale2d > -2 && pin.dx > 0) {
+                guiX = event.resolution.getScaledWidth() - iconsize;
+                guiY = event.resolution.getScaledHeight() - iconsize;
+            } else if (scale2d > 0 && scale2d < 2 && pin.dy > 0) {
+                guiX = iconsize;
+                guiY = event.resolution.getScaledHeight() - 50;
+            } else if (scale2d < 0 && scale2d > -2 && pin.dy < 0) {
+                guiX = iconsize;
+                guiY = iconsize;
+            }
 
             if (pin.dx > 0) {
                 //tess.addVertex(event.resolution.getScaledWidth(), xmax, 0);
-                //右
+                //
+                if (xmax < event.resolution.getScaledHeight() - iconsize && xmax > iconsize) {
+                    guiX = event.resolution.getScaledWidth() - iconsize;
+                    guiY = xmax;
+                }
+/*
                 tess.addVertexWithUV(event.resolution.getScaledWidth() + 50, xmax + 50, 0, (double) 1, (double) 1);
                 tess.addVertexWithUV(event.resolution.getScaledWidth() + 50, xmax - 50, 0, (double) 1, (double) 0);
                 tess.addVertexWithUV(event.resolution.getScaledWidth() - 50, xmax - 50, 0, (double) 0, (double) 0);
                 tess.addVertexWithUV(event.resolution.getScaledWidth() - 50, xmax + 50, 0, (double) 0, (double) 1);
 
+
+ */
             } else {
                 //tess.addVertex(0, x0, 0);
-                //左
+                //
+                if (x0 > iconsize && x0 < event.resolution.getScaledHeight() - iconsize) {
+                    guiX = iconsize;
+                    guiY = x0;
+                }
+                /*
                 tess.addVertexWithUV(50, x0 + 50, 0, (double) 1, (double) 1);
                 tess.addVertexWithUV(50, x0 - 50, 0, (double) 1, (double) 0);
                 tess.addVertexWithUV(-50, x0 - 50, 0, (double) 0, (double) 0);
                 tess.addVertexWithUV(-50, x0 + 50, 0, (double) 0, (double) 1);
 
+
+                 */
             }
             if (pin.dy > 0) {
                 //tess.addVertex(ymax, event.resolution.getScaledHeight(), 0);
-                //下
+                //
+                if (ymax > iconsize && ymax < event.resolution.getScaledWidth() - iconsize) {
+                    guiX = ymax;
+                    guiY = event.resolution.getScaledHeight() - iconsize;
+                }
+/*
                 tess.addVertexWithUV(ymax + 50, event.resolution.getScaledHeight() + 50, 0, (double) 1, (double) 1);
                 tess.addVertexWithUV(ymax + 50, event.resolution.getScaledHeight() - 50, 0, (double) 1, (double) 0);
                 tess.addVertexWithUV(ymax - 50, event.resolution.getScaledHeight() - 50, 0, (double) 0, (double) 0);
                 tess.addVertexWithUV(ymax - 50, event.resolution.getScaledHeight() + 50, 0, (double) 0, (double) 1);
+
+
+ */
             } else {
                 //tess.addVertex(y0, 0, 0);
-                //上
+                //
+                if (y0 > iconsize && y0 < event.resolution.getScaledWidth() - iconsize) {
+                    guiX = y0;
+                    guiY = iconsize;
+                }
+                /*
                 tess.addVertexWithUV(y0 + 50, 50, 0, (double) 1, (double) 1);
                 tess.addVertexWithUV(y0 + 50, -50, 0, (double) 1, (double) 0);
                 tess.addVertexWithUV(y0 - 50, -50, 0, (double) 0, (double) 0);
                 tess.addVertexWithUV(y0 - 50, 50, 0, (double) 0, (double) 1);
 
+
+                 */
             }
 
+
+            tess.addVertexWithUV(guiX + iconsize, guiY + iconsize, 0, (double) 1, (double) 1);
+            tess.addVertexWithUV(guiX + iconsize, guiY - iconsize, 0, (double) 1, (double) 0);
+            tess.addVertexWithUV(guiX - iconsize, guiY - iconsize, 0, (double) 0, (double) 0);
+            tess.addVertexWithUV(guiX - iconsize, guiY + iconsize, 0, (double) 0, (double) 1);
 
             //System.out.println((event.resolution.getScaledWidth_double() / 2));
             //System.out.println(scale2d + ":" + scale2dd + ":" + x0 + ":" + y0 + ":" + xmax + ":" + ymax);
@@ -229,11 +294,13 @@ public class PinRenderer {
             GL11.glDisable(GL11.GL_TEXTURE_2D);
             GL11.glPointSize(100f);
             tess.startDrawing(GL11.GL_LINES);
-            tess.addVertex(event.resolution.getScaledWidth() / 2d, event.resolution.getScaledHeight() / 2d, 0);
-            tess.addVertex(event.resolution.getScaledWidth() / 2d + pin.dx * 10000, event.resolution.getScaledHeight() / 2d + pin.dy * 10000, 0);
+            //tess.addVertex(event.resolution.getScaledWidth() / 2d, event.resolution.getScaledHeight() / 2d, 0);
+            //tess.addVertex(event.resolution.getScaledWidth() / 2d + pin.dx * 10000, event.resolution.getScaledHeight() / 2d + pin.dy * 10000, 0);
             tess.draw();
 
             if (!pin.isVisible || pin.dx < 0 || pin.dy < 0 || pin.dx > Minecraft.getMinecraft().displayWidth || pin.dy > Minecraft.getMinecraft().displayHeight) {
+
+
                 EntityPlayer p = Minecraft.getMinecraft().thePlayer;
                 double ddx = p.prevPosX + (p.posX - p.prevPosX) * partialTicks;
                 double ddy = p.prevPosY + (p.posY - p.prevPosY) * partialTicks - p.yOffset;
