@@ -9,7 +9,11 @@ import java.util.Map;
 
 public class PinManager {
 
-    private static Map<String, PinData> PINS = new HashMap<String, PinData>();
+    // TODO: Load from database
+    private static final Map<String, PinData> PINS = new HashMap<String, PinData>();
+
+    // HashMap#values is unmodifiable. But that Iterator supports remove operation.
+    private static final Collection<PinData> PINS_VIEW = Collections.unmodifiableCollection(PINS.values());
 
     public static void addPin(double x, double y, double z, String player, int dimId) {
         PINS.put(player, new PinData(x, y, z, player, dimId));
@@ -28,7 +32,7 @@ public class PinManager {
     }
 
     public static Collection<? extends PinData> pins() {
-        return Collections.unmodifiableCollection(PINS.values());
+        return PINS_VIEW;
     }
 
 }
