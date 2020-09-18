@@ -53,10 +53,10 @@ public class PinRenderer {
         double dz = p.prevPosZ + (p.posZ - p.prevPosZ) * partialTicks;
 
         GLU.gluProject(
-            (float) (pin.x - dx),
-            (float) (pin.y - dy),
-            (float) (pin.z - dz),
-            modelview, projection, viewport, objectCoords);
+                (float) (pin.x - dx),
+                (float) (pin.y - dy),
+                (float) (pin.z - dz),
+                modelview, projection, viewport, objectCoords);
         //pin Vector
         Vec3 vec = Vec3.createVectorHelper((float) (pin.x - dx), (float) (pin.y - dy), (float) (pin.z - dz)).normalize();
         //player Vector
