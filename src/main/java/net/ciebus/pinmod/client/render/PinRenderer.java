@@ -173,9 +173,9 @@ public class PinRenderer {
             double dy = (pin.dy - Minecraft.getMinecraft().displayHeight / 2f);
             Tessellator tess = Tessellator.instance;
 
-            Minecraft.getMinecraft().renderEngine.bindTexture(new ResourceLocation("pinmod", "textures/pin_icon_1.png"));
             GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
             GL11.glPushMatrix();
+            Minecraft.getMinecraft().renderEngine.bindTexture(new ResourceLocation("pinmod", "textures/pin_icon_1.png"));
             tess.startDrawing(GL11.GL_QUADS);
 
             double var12 = 0.3d;
@@ -316,9 +316,6 @@ public class PinRenderer {
                 double pcos = (vec.xCoord * pvec.xCoord + vec.zCoord * pvec.zCoord);
                 double rpcos = (vec.xCoord * rpvec.xCoord + vec.zCoord * rpvec.zCoord);
                 // System.out.println((vec.xCoord * pvec.xCoord + vec.zCoord * pvec.zCoord) + ":" + (vec.xCoord * rpvec.xCoord + vec.zCoord * rpvec.zCoord));
-
-                GL11.glPopMatrix();
-                GL11.glPopAttrib();
             } else {
                 if (pin.dx * event.resolution.getScaledHeight() / (float) Minecraft.getMinecraft().displayHeight < 0 || (-dy + Minecraft.getMinecraft().displayHeight / 2f) * event.resolution.getScaledWidth() / (float) Minecraft.getMinecraft().displayWidth < 0)
                     return;
@@ -327,9 +324,9 @@ public class PinRenderer {
                 tess.startDrawing(GL11.GL_POINTS);
                 //  tess.addVertex(pin.dx * event.resolution.getScaledHeight() / (float) Minecraft.getMinecraft().displayHeight, (-dy + Minecraft.getMinecraft().displayHeight / 2f) * event.resolution.getScaledWidth() / (float) Minecraft.getMinecraft().displayWidth, 0);
                 tess.draw();
-                GL11.glPopMatrix();
-                GL11.glPopAttrib();
             }
+            GL11.glPopMatrix();
+            GL11.glPopAttrib();
         }
     }
 
