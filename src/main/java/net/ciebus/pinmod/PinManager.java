@@ -23,10 +23,10 @@ public class PinManager {
         PINS.remove(player);
     }
 
-    public static boolean isDelete(double x, double y, double z, String player, int dimId) {
+    public static boolean isToDelete(double hitX, double hitY, double hitZ, String player) {
         PinData pin = PINS.get(player);
         if (pin != null) {
-            return Math.round(x) == Math.round(pin.x) && Math.round(y) == Math.round(pin.y) && Math.round(z) == Math.round(pin.z);
+            return Math.round(hitX) == Math.round(pin.x) && Math.round(hitY) == Math.round(pin.y) && Math.round(hitZ) == Math.round(pin.z);
         }
         return false;
     }
