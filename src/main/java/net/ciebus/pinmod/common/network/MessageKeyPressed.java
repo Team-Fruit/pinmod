@@ -1,4 +1,4 @@
-package net.ciebus.pinmod;
+package net.ciebus.pinmod.common.network;
 
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
