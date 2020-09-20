@@ -5,11 +5,14 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.InputEvent;
 import net.ciebus.pinmod.PinManager;
+import net.ciebus.pinmod.client.render.PinRenderer;
 import net.ciebus.pinmod.common.network.MessageKeyPressed;
 import net.ciebus.pinmod.common.network.PacketHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraftforge.common.MinecraftForge;
+import org.lwjgl.Sys;
 import org.lwjgl.input.Keyboard;
 
 public final class KeyBindings {
@@ -19,6 +22,7 @@ public final class KeyBindings {
     public static void init() {
         ClientRegistry.registerKeyBinding(sampleKey);
         FMLCommonHandler.instance().bus().register(new KeyBindings());
+        MinecraftForge.EVENT_BUS.register(new KeyBindings());
     }
 
     @SubscribeEvent
