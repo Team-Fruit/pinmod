@@ -11,6 +11,7 @@ server.properties
 servers.dat
 world
 whitelist.json
+usercache.json
 
 ### Minecraft
 eclipse
