@@ -30,6 +30,7 @@ public final class KeyBindings {
         if (sampleKey.isPressed()) {
             MovingObjectPosition mop = Minecraft.getMinecraft().renderViewEntity.rayTrace(200, 1.0F);
             if (mop != null) {
+                Minecraft.getMinecraft().thePlayer.sendChatMessage("sushi");
                 boolean state = PinManager.isToDelete(mop.hitVec.xCoord, mop.hitVec.yCoord, mop.hitVec.zCoord, Minecraft.getMinecraft().thePlayer.getDisplayName());
                 PacketHandler.INSTANCE.sendToServer(new MessageKeyPressed(state, mop.hitVec.xCoord, mop.hitVec.yCoord, mop.hitVec.zCoord, Minecraft.getMinecraft().thePlayer.getDisplayName(), Minecraft.getMinecraft().thePlayer.worldObj.provider.dimensionId));
             }
