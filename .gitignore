@@ -2,6 +2,17 @@
 # Created by https://www.toptal.com/developers/gitignore/api/git,java,forgegradle,intellij,eclipse
 # Edit at https://www.toptal.com/developers/gitignore?templates=git,java,forgegradle,intellij,eclipse
 
+### Minecraft Server
+eula.txt
+ops.json
+banned-ips.json
+banned-players.json
+server.properties
+servers.dat
+world
+whitelist.json
+usercache.json
+
 ### Minecraft
 eclipse
 .gradle
