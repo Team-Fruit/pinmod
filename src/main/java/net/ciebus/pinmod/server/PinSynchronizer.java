@@ -25,7 +25,7 @@ public class PinSynchronizer {
         if (!event.player.worldObj.isRemote) {
             for (PinData pin : PinManager.pins()) {
                 MessageKeyPressed pindata = new MessageKeyPressed(false, pin.x, pin.y, pin.z, pin.player, pin.dimId);
-                PacketHandler.INSTANCE.sendTo(pindata, (EntityPlayerMP) event.player);
+                PacketHandler.INSTANCE2.sendTo(pindata, (EntityPlayerMP) event.player);
             }
         }
     }

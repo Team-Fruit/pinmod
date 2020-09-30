@@ -9,7 +9,7 @@ public class SMessageKeyPressedHandler implements IMessageHandler<MessageKeyPres
     @Override
     public IMessage onMessage(MessageKeyPressed message, MessageContext ctx) {
         System.out.println("sushi");
-        PacketHandler.INSTANCE.sendToAll(message);
+        PacketHandler.INSTANCE1.sendToAll(message);
         return null;
     }
 

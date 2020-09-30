@@ -32,7 +32,7 @@ public final class KeyBindings {
             if (mop != null) {
                 Minecraft.getMinecraft().thePlayer.sendChatMessage("sushi");
                 boolean state = PinManager.isToDelete(mop.hitVec.xCoord, mop.hitVec.yCoord, mop.hitVec.zCoord, Minecraft.getMinecraft().thePlayer.getDisplayName());
-                PacketHandler.INSTANCE.sendToServer(new MessageKeyPressed(state, mop.hitVec.xCoord, mop.hitVec.yCoord, mop.hitVec.zCoord, Minecraft.getMinecraft().thePlayer.getDisplayName(), Minecraft.getMinecraft().thePlayer.worldObj.provider.dimensionId));
+                PacketHandler.INSTANCE2.sendToServer(new MessageKeyPressed(state, mop.hitVec.xCoord, mop.hitVec.yCoord, mop.hitVec.zCoord, Minecraft.getMinecraft().thePlayer.getDisplayName(), Minecraft.getMinecraft().thePlayer.worldObj.provider.dimensionId));
             }
         }
     }
