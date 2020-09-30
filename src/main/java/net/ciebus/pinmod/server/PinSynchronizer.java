@@ -3,6 +3,7 @@ package net.ciebus.pinmod.server;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
+import cpw.mods.fml.common.network.FMLNetworkEvent;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
@@ -28,6 +29,13 @@ public class PinSynchronizer {
                 PacketHandler.INSTANCE1.sendTo(pindata, (EntityPlayerMP) event.player);
             }
         //}
+    }
+
+    @SubscribeEvent
+    public void onPlayerLeaved(FMLNetworkEvent.ClientDisconnectionFromServerEvent event) {
+        for (PinData pin : PinManager.pins()) {
+            PinManager.removePin(pin.player);
+        }
     }
 
     public static void init() {

@@ -21,15 +21,7 @@ public class CommonProxy {
 
     public void onInit(FMLInitializationEvent event) {
         PinSynchronizer.init();
-        MinecraftForge.EVENT_BUS.register(this);
-        FMLCommonHandler.instance().bus().register(this);
-
     }
 
-    @SubscribeEvent
-    public void onPlayerLeaved(FMLNetworkEvent.ClientDisconnectionFromServerEvent event) {
-        for (PinData pin : PinManager.pins()) {
-            PinManager.removePin(pin.player);
-        }
-    }
+
 }
