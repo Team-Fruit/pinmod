@@ -9,7 +9,6 @@ public class SMessageKeyPressedHandler implements IMessageHandler<MessageKeyPres
 
     @Override
     public IMessage onMessage(MessageKeyPressed message, MessageContext ctx) {
-        System.out.println("sushi");
         PinManager.addPin(message.x,message.y,message.z,message.playerName,message.dimId);
         PacketHandler.INSTANCE1.sendToAll(message);
         return null;

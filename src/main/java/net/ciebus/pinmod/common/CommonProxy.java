@@ -28,7 +28,6 @@ public class CommonProxy {
 
     @SubscribeEvent
     public void onPlayerLeaved(FMLNetworkEvent.ClientDisconnectionFromServerEvent event) {
-        System.out.println("leaved");
         for (PinData pin : PinManager.pins()) {
             PinManager.removePin(pin.player);
         }
