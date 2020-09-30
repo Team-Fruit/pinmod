@@ -20,14 +20,14 @@ import net.minecraftforge.common.MinecraftForge;
 public class PinSynchronizer {
 
     @SubscribeEvent
-    @SideOnly(Side.SERVER)
+    //@SideOnly(Side.SERVER)
     public void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
-        if (!event.player.worldObj.isRemote) {
+        //if (!event.player.worldObj.isRemote) {
             for (PinData pin : PinManager.pins()) {
                 MessageKeyPressed pindata = new MessageKeyPressed(false, pin.x, pin.y, pin.z, pin.player, pin.dimId);
-                PacketHandler.INSTANCE2.sendTo(pindata, (EntityPlayerMP) event.player);
+                PacketHandler.INSTANCE1.sendTo(pindata, (EntityPlayerMP) event.player);
             }
-        }
+        //}
     }
 
     public static void init() {
