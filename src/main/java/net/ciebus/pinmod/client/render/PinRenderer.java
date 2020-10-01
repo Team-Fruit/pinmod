@@ -149,7 +149,7 @@ public class PinRenderer {
 
         GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glDisable(GL11.GL_DEPTH_TEST);
-        GL11.glScalef((float)scale, (float)scale, (float) scale);
+        GL11.glScalef((float) scale, (float) scale, (float) scale);
         fr.drawString(str, -fr.getStringWidth(str) / 2, 0 * 10 - 1 * 5, 0xFFFFFF);
 
 
@@ -158,7 +158,7 @@ public class PinRenderer {
     }
 
     @SubscribeEvent
-    public void renderTest(RenderGameOverlayEvent.Post event) {
+    public void renderGui(RenderGameOverlayEvent.Post event) {
         float partialTicks = event.partialTicks;
         for (PinData pin : PinManager.pins()) {
             double dy = (pin.dy - Minecraft.getMinecraft().displayHeight / 2f);
@@ -181,6 +181,7 @@ public class PinRenderer {
 
             double iconsize = 10d;
 
+            GL11.glColor3f(254f / 255, 182f / 255, 36f / 255);
             if (scale2d > 0 && scale2d < 2 && pin.dx > 0) {
                 guiX = event.resolution.getScaledWidth() - iconsize;
                 guiY = iconsize;
@@ -189,7 +190,7 @@ public class PinRenderer {
                 guiY = event.resolution.getScaledHeight() - iconsize;
             } else if (scale2d > 0 && scale2d < 2 && pin.dy > 0) {
                 guiX = iconsize;
-                guiY = event.resolution.getScaledHeight() - 50;
+                guiY = event.resolution.getScaledHeight() - iconsize;
             } else if (scale2d < 0 && scale2d > -2 && pin.dy < 0) {
                 guiX = iconsize;
                 guiY = iconsize;
@@ -229,10 +230,23 @@ public class PinRenderer {
             tess.startDrawing(GL11.GL_LINES);
             tess.draw();
 
+            GL11.glEnable(GL11.GL_TEXTURE_2D);
+            EntityPlayer p = Minecraft.getMinecraft().thePlayer;
+
+            double pinLength = Math.sqrt((p.posX - pin.x) * (p.posX - pin.x) + (p.posY - pin.y) * (p.posY - pin.y) + (p.posZ - pin.z) * (p.posZ - pin.z));
+
+            FontRenderer fr = Minecraft.getMinecraft().fontRenderer;
+            String str = pin.player + "(" + (int) pinLength + "m)";
+            if (event.resolution.getScaledWidth() - guiX > fr.getStringWidth(str)) {
+                fr.drawString(str, (int) guiX + 10, (int) (guiY - iconsize / 2 + 2), 0xFFFFFF);
+            } else {
+                fr.drawString(str, (int)(guiX - iconsize - fr.getStringWidth(str)), (int) (guiY - iconsize / 2 + 2), 0xFFFFFF);
+            }
+
             if (!pin.isVisible || pin.dx < 0 || pin.dy < 0 || pin.dx > Minecraft.getMinecraft().displayWidth || pin.dy > Minecraft.getMinecraft().displayHeight) {
 
 
-                EntityPlayer p = Minecraft.getMinecraft().thePlayer;
+                // EntityPlayer p = Minecraft.getMinecraft().thePlayer;
                 double ddx = p.prevPosX + (p.posX - p.prevPosX) * partialTicks;
                 double ddy = p.prevPosY + (p.posY - p.prevPosY) * partialTicks - p.yOffset;
                 double ddz = p.prevPosZ + (p.posZ - p.prevPosZ) * partialTicks;
