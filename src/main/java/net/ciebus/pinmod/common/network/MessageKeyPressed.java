@@ -1,17 +1,16 @@
 package net.ciebus.pinmod.common.network;
 
-import cpw.mods.fml.common.network.ByteBufUtils;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.network.PacketBuffer;
 
-public class MessageKeyPressed implements IMessage {
+public class MessageKeyPressed {
 
     public boolean state;
     public double x;
     public double y;
     public double z;
     public int dimId;
+    public int length;
     public String playerName;
 
 
@@ -24,26 +23,27 @@ public class MessageKeyPressed implements IMessage {
         this.y = y;
         this.z = z;
         this.dimId = dimId;
+        this.length = playerName.length();
         this.playerName = playerName;
     }
 
-    @Override
-    public void fromBytes(ByteBuf buf) {
+    public void fromBytes(PacketBuffer buf) {
         this.state = buf.readBoolean();
         this.x = buf.readDouble();
         this.y = buf.readDouble();
         this.z = buf.readDouble();
         this.dimId = buf.readInt();
-        this.playerName = ByteBufUtils.readUTF8String(buf);
+        this.length = buf.readInt();
+        this.playerName = buf.readString(length);
     }
 
-    @Override
-    public void toBytes(ByteBuf buf) {
+    public void toBytes(PacketBuffer buf) {
         buf.writeBoolean(state);
         buf.writeDouble(x);
         buf.writeDouble(y);
         buf.writeDouble(z);
         buf.writeInt(dimId);
-        ByteBufUtils.writeUTF8String(buf, playerName);
+        buf.writeInt(length);
+        buf.writeString(playerName);
     }
 }
