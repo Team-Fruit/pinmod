@@ -18,7 +18,6 @@ public final class Pin {
     public static ClientProxy clientProxy;
 
     private void initClient(final FMLClientSetupEvent event) {
-        //クライアントサイド処理
         clientProxy.onPreInit();
         clientProxy.onInit();
     }

@@ -8,23 +8,17 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Vec3;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.util.glu.GLU;
 
-import javax.vecmath.Matrix3d;
-import javax.vecmath.Vector3d;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 public class PinRenderer {
 
-    private static IntBuffer viewport = GLAllocation.createDirectIntBuffer(16);
+    private static FloatBuffer viewport = GLAllocation.createDirectFloatBuffer(16);
     private static FloatBuffer modelview = GLAllocation.createDirectFloatBuffer(16);
     private static FloatBuffer projection = GLAllocation.createDirectFloatBuffer(16);
     private static FloatBuffer objectCoords = GLAllocation.createDirectFloatBuffer(16);
@@ -41,7 +35,7 @@ public class PinRenderer {
     }
 
     public void render(PinData pin, float partialTicks) {
-        if (Minecraft.getMinecraft().theWorld.provider.dimensionId != pin.dimId) return;
+        if (Minecraft.getInstance().world.dimension. .dimensionId != pin.dimId)return;
 
         EntityPlayer p = Minecraft.getMinecraft().thePlayer;
         double pinLength = Math.sqrt((p.posX - pin.x) * (p.posX - pin.x) + (p.posY - pin.y) * (p.posY - pin.y) + (p.posZ - pin.z) * (p.posZ - pin.z));
@@ -240,7 +234,7 @@ public class PinRenderer {
             if (event.resolution.getScaledWidth() - guiX > fr.getStringWidth(str)) {
                 fr.drawString(str, (int) guiX + 10, (int) (guiY - iconsize / 2 + 2), 0xFFFFFF);
             } else {
-                fr.drawString(str, (int)(guiX - iconsize - fr.getStringWidth(str)), (int) (guiY - iconsize / 2 + 2), 0xFFFFFF);
+                fr.drawString(str, (int) (guiX - iconsize - fr.getStringWidth(str)), (int) (guiY - iconsize / 2 + 2), 0xFFFFFF);
             }
 
             if (!pin.isVisible || pin.dx < 0 || pin.dy < 0 || pin.dx > Minecraft.getMinecraft().displayWidth || pin.dy > Minecraft.getMinecraft().displayHeight) {
