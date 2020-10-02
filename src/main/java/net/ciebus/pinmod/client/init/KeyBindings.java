@@ -32,7 +32,7 @@ public final class KeyBindings {
             RayTraceResult mop = Minecraft.getMinecraft().getRenderViewEntity().rayTrace(200, 1.0F);
             if (mop != null) {
                 boolean state = PinManager.isToDelete(mop.hitVec.x, mop.hitVec.y, mop.hitVec.z, Minecraft.getMinecraft().player.getDisplayName().toString());
-                PacketHandler.INSTANCE2.sendToServer(new MessageKeyPressed(state, mop.hitVec.x, mop.hitVec.y, mop.hitVec.z, Minecraft.getMinecraft().player.getDisplayName().toString(), Minecraft.getMinecraft().player.world.provider.getDimension()));
+                PacketHandler.INSTANCE2.sendToServer(new MessageKeyPressed(state, mop.hitVec.x, mop.hitVec.y, mop.hitVec.z, Minecraft.getMinecraft().player.getDisplayName().getFormattedText(), Minecraft.getMinecraft().player.world.provider.getDimension()));
             }
         }
     }

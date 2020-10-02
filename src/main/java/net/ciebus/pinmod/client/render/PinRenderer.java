@@ -4,10 +4,7 @@ import net.ciebus.pinmod.PinManager;
 import net.ciebus.pinmod.common.data.PinData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.ActiveRenderInfo;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GLAllocation;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexBuffer;
@@ -16,6 +13,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraftforge.client.model.Attributes;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
@@ -123,19 +121,18 @@ public class PinRenderer {
         renderer.pos((double) (0 - f3 * var12 + f6 * var12) * scale, (double) (0 + f4 * var12) * scale, (double) (0 - f5 * var12 + f7 * var12) * scale).tex((double) 1, (double) 0).endVertex();
         renderer.pos((double) (0 + f3 * var12 + f6 * var12) * scale, (double) (0 + f4 * var12) * scale, (double) (0 + f5 * var12 + f7 * var12) * scale).tex((double) 0, (double) 0).endVertex();
         renderer.pos((double) (0 + f3 * var12 - f6 * var12) * scale, (double) (0 - f4 * var12) * scale, (double) (0 + f5 * var12 - f7 * var12) * scale).tex((double) 0, (double) 1).endVertex();
-        renderer.finishDrawing();
+
         tess.draw();
 
         GL11.glDisable(GL11.GL_TEXTURE_2D);
         GL11.glEnable(GL11.GL_DEPTH_TEST);
         GL11.glRotated(Math.atan2(f3, f5) / Math.PI * 180d + 90d, 0, 1, 0);
-        renderer.begin(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX);
-        renderer.pos(0, -1.6d, 0);
-        renderer.pos(-0.05d, -0.35d, 0);
-        renderer.pos(0.05d, -0.35d, 0);
-        renderer.finishDrawing();
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        renderer.begin(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION);
+        renderer.pos(0, -1.6d, 0).endVertex();
+        renderer.pos(-0.05d, -0.35d, 0).endVertex();
+        renderer.pos(0.05d, -0.35d, 0).endVertex();
         tess.draw();
-
         FontRenderer fr = Minecraft.getMinecraft().fontRenderer;
         String str = pin.player + "(" + (int) pinLength + "m)";
         float s = 0.016666668F * 0.6666667F * 2;
@@ -146,12 +143,12 @@ public class PinRenderer {
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glColor4f(0, 0, 0, 0.5f);
         GL11.glDisable(GL11.GL_TEXTURE_2D);
-        renderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+        renderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
         renderer.pos(((float) fr.getStringWidth(str) / 2 + 2) * scale, -6 * scale, 0.01f);
         renderer.pos((-(float) fr.getStringWidth(str) / 2 - 2) * scale, -6 * scale, 0.01f);
         renderer.pos((-(float) fr.getStringWidth(str) / 2 - 2) * scale, 3 * scale, 0.01f);
         renderer.pos(((float) fr.getStringWidth(str) / 2 + 2) * scale, 3 * scale, 0.01f);
-        renderer.finishDrawing();
+        //renderer.finishDrawing();
         tess.draw();
 
 
@@ -160,6 +157,7 @@ public class PinRenderer {
         GL11.glScalef((float) scale, (float) scale, (float) scale);
         fr.drawString(str, -fr.getStringWidth(str) / 2, 0 * 10 - 1 * 5, 0xFFFFFF);
 
+        renderer.finishDrawing();
 
         GL11.glPopMatrix();
         GL11.glPopAttrib();
@@ -232,13 +230,13 @@ public class PinRenderer {
             renderer.pos(guiX + iconsize, guiY - iconsize, 0).tex((double) 1, (double) 0).endVertex();
             renderer.pos(guiX - iconsize, guiY - iconsize, 0).tex((double) 0, (double) 0).endVertex();
             renderer.pos(guiX - iconsize, guiY + iconsize, 0).tex((double) 0, (double) 1).endVertex();
-            renderer.finishDrawing();
+
             tess.draw();
 
             GL11.glDisable(GL11.GL_TEXTURE_2D);
             GL11.glPointSize(100f);
-            renderer.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_TEX);
-            tess.draw();
+            //renderer.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_TEX);
+            //tess.draw();
 
             GL11.glEnable(GL11.GL_TEXTURE_2D);
             EntityPlayer p = Minecraft.getMinecraft().player;
@@ -265,7 +263,7 @@ public class PinRenderer {
                 //Vec3 pvec = Minecraft.getMinecraft().renderViewEntity.rayTrace(200, 1.0F).hitVec.normalize();
                 Vec3d pvec = Minecraft.getMinecraft().player.getLookVec().normalize();
                 Vec3d rpvec = Minecraft.getMinecraft().player.getLookVec().normalize();
-                rpvec.rotatePitch(-90f);
+                rpvec.rotateYaw(-90f);
 
 
                 double pcos = (vec.x * pvec.x + vec.z * pvec.z);
@@ -277,8 +275,9 @@ public class PinRenderer {
                 GL11.glDisable(GL11.GL_TEXTURE_2D);
                 GL11.glPointSize(20f);
                 // tess.startDrawing(GL11.GL_POINTS);
-                tess.draw();
+                //tess.draw();
             }
+            renderer.finishDrawing();
             GL11.glPopMatrix();
             GL11.glPopAttrib();
         }
