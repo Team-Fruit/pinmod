@@ -1,10 +1,10 @@
 package net.ciebus.pinmod.client;
 
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import net.ciebus.pinmod.client.init.KeyBindings;
 import net.ciebus.pinmod.client.init.Renderers;
 import net.ciebus.pinmod.common.CommonProxy;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 public class ClientProxy extends CommonProxy {
 

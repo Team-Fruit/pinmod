@@ -1,11 +1,10 @@
 package net.ciebus.pinmod;
 
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.EventHandler;
-import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import net.ciebus.pinmod.common.CommonProxy;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.SidedProxy;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 @Mod(modid = Pin.MODID, version = Pin.VERSION)
 public final class Pin {
@@ -16,12 +15,12 @@ public final class Pin {
     @SidedProxy(clientSide = "net.ciebus.pinmod.client.ClientProxy", serverSide = "net.ciebus.pinmod.common.CommonProxy")
     public static CommonProxy proxy;
 
-    @EventHandler
+    @Mod.EventHandler
     public static void preInit(FMLPreInitializationEvent event) {
         proxy.onPreInit(event);
     }
 
-    @EventHandler
+    @Mod.EventHandler
     public static void init(FMLInitializationEvent event) {
         proxy.onInit(event);
     }
