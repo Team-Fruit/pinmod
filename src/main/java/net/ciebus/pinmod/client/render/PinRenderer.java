@@ -47,9 +47,9 @@ public class PinRenderer {
         EntityPlayer p = Minecraft.getMinecraft().player;
         double pinLength = Math.sqrt((p.posX - pin.x) * (p.posX - pin.x) + (p.posY - pin.y) * (p.posY - pin.y) + (p.posZ - pin.z) * (p.posZ - pin.z));
 
-        GL11.glGetFloat(GL11.GL_MODELVIEW_MATRIX, modelview);
-        GL11.glGetFloat(GL11.GL_PROJECTION_MATRIX, projection);
-        GL11.glGetInteger(GL11.GL_VIEWPORT, viewport);
+        GlStateManager.getFloat(GL11.GL_MODELVIEW_MATRIX, modelview);
+        GlStateManager.getFloat(GL11.GL_PROJECTION_MATRIX, projection);
+        GlStateManager.glGetInteger(GL11.GL_VIEWPORT, viewport);
 
         double dx = p.prevPosX + (p.posX - p.prevPosX) * partialTicks;
         double dy = p.prevPosY + (p.posY - p.prevPosY) * partialTicks - p.getYOffset();
@@ -90,20 +90,23 @@ public class PinRenderer {
         pin.update(vec.x * pvec.x + vec.z * pvec.z > 0);
 
         Vec3d cpvec = Minecraft.getMinecraft().player.getLookVec();
-        cpvec.rotatePitch((float) (Math.PI / 180) * 45);
+        cpvec.rotateYaw((float) (Math.PI / 180) * 45);
 
         Tessellator tess = Tessellator.getInstance();
-        GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
-        GL11.glPushMatrix();
+        GlStateManager.pushAttrib();
+        GlStateManager.pushMatrix();
         Minecraft.getMinecraft().renderEngine.bindTexture(new ResourceLocation("pinmod", "textures/pin_icon_1.png"));
 
 
-        GL11.glColor3f(254f / 255, 182f / 255, 36f / 255);
-        GL11.glTranslated(pin.x - p.posX, pin.y - p.posY + 1.6d, pin.z - p.posZ);
+        GlStateManager.color(254f / 255, 182f / 255, 36f / 255);
+        GlStateManager.translate(pin.x - p.posX, pin.y - p.posY + 1.6d, pin.z - p.posZ);
 
-        GL11.glDisable(GL11.GL_LIGHTING);
-        GL11.glDisable(GL11.GL_DEPTH_TEST);
-        GL11.glDisable(GL11.GL_CULL_FACE);
+        //GL11.glDisable(GL11.GL_LIGHTING);
+        GlStateManager.disableLighting();
+        //GL11.glDisable(GL11.GL_DEPTH_TEST);
+        GlStateManager.disableDepth();
+        //GL11.glDisable(GL11.GL_CULL_FACE);
+        GlStateManager.disableCull();
 
         float f3 = ActiveRenderInfo.getRotationX();
         float f5 = ActiveRenderInfo.getRotationZ();
@@ -121,13 +124,16 @@ public class PinRenderer {
         renderer.pos((double) (0 - f3 * var12 + f6 * var12) * scale, (double) (0 + f4 * var12) * scale, (double) (0 - f5 * var12 + f7 * var12) * scale).tex((double) 1, (double) 0).endVertex();
         renderer.pos((double) (0 + f3 * var12 + f6 * var12) * scale, (double) (0 + f4 * var12) * scale, (double) (0 + f5 * var12 + f7 * var12) * scale).tex((double) 0, (double) 0).endVertex();
         renderer.pos((double) (0 + f3 * var12 - f6 * var12) * scale, (double) (0 - f4 * var12) * scale, (double) (0 + f5 * var12 - f7 * var12) * scale).tex((double) 0, (double) 1).endVertex();
-
         tess.draw();
 
-        GL11.glDisable(GL11.GL_TEXTURE_2D);
-        GL11.glEnable(GL11.GL_DEPTH_TEST);
-        GL11.glRotated(Math.atan2(f3, f5) / Math.PI * 180d + 90d, 0, 1, 0);
-        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        //GL11.glDisable(GL11.GL_TEXTURE_2D);
+        GlStateManager.enableTexture2D();
+        //GL11.glEnable(GL11.GL_DEPTH_TEST);
+        GlStateManager.enableDepth();
+        //GL11.glRotated(Math.atan2(f3, f5) / Math.PI * 180d + 90d, 0, 1, 0);
+        GlStateManager.rotate((float) Math.atan2(f3, f5) /(float) Math.PI * 180f + 90f, 0, 1, 0);
+        //GL11.glDisable(GL11.GL_TEXTURE_2D);
+        GlStateManager.disableTexture2D();
         renderer.begin(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION);
         renderer.pos(0, -1.6d, 0).endVertex();
         renderer.pos(-0.05d, -0.35d, 0).endVertex();
@@ -136,13 +142,16 @@ public class PinRenderer {
         FontRenderer fr = Minecraft.getMinecraft().fontRenderer;
         String str = pin.player + "(" + (int) pinLength + "m)";
         float s = 0.016666668F * 0.6666667F * 2;
-        GL11.glTranslated(0, 0.5, 0);
+        //GL11.glTranslated(0, 0.5, 0);
+        GlStateManager.translate(0f,0.5f,0f);
 
-        GL11.glScalef(s, -s, s);
+        GlStateManager.scale(s, -s, s);
 
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glColor4f(0, 0, 0, 0.5f);
-        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        //GL11.glEnable(GL11.GL_BLEND);
+        GlStateManager.enableBlend();
+        GlStateManager.color(0, 0, 0, 0.5f);
+        //GL11.glDisable(GL11.GL_TEXTURE_2D);
+        GlStateManager.disableTexture2D();
         renderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
         renderer.pos(((float) fr.getStringWidth(str) / 2 + 2) * scale, -6 * scale, 0.01f);
         renderer.pos((-(float) fr.getStringWidth(str) / 2 - 2) * scale, -6 * scale, 0.01f);
@@ -152,15 +161,17 @@ public class PinRenderer {
         tess.draw();
 
 
-        GL11.glEnable(GL11.GL_TEXTURE_2D);
-        GL11.glDisable(GL11.GL_DEPTH_TEST);
-        GL11.glScalef((float) scale, (float) scale, (float) scale);
+        //GL11.glEnable(GL11.GL_TEXTURE_2D);
+        GlStateManager.enableTexture2D();
+        //GL11.glDisable(GL11.GL_DEPTH_TEST);
+        GlStateManager.disableDepth();
+        GlStateManager.scale((float) scale, (float) scale, (float) scale);
         fr.drawString(str, -fr.getStringWidth(str) / 2, 0 * 10 - 1 * 5, 0xFFFFFF);
 
-        renderer.finishDrawing();
+        //renderer.finishDrawing();
 
-        GL11.glPopMatrix();
-        GL11.glPopAttrib();
+        GlStateManager.popMatrix();
+        GlStateManager.popAttrib();
     }
 
     @SubscribeEvent
@@ -170,8 +181,8 @@ public class PinRenderer {
             double dy = (pin.dy - Minecraft.getMinecraft().displayHeight / 2f);
             Tessellator tess = Tessellator.getInstance();
 
-            GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
-            GL11.glPushMatrix();
+            GlStateManager.pushAttrib();
+            GlStateManager.pushMatrix();
             Minecraft.getMinecraft().renderEngine.bindTexture(new ResourceLocation("pinmod", "textures/pin_icon_1.png"));
 
             BufferBuilder renderer = tess.getBuffer();
@@ -189,7 +200,7 @@ public class PinRenderer {
 
             double iconsize = 10d;
 
-            GL11.glColor3f(254f / 255, 182f / 255, 36f / 255);
+            GlStateManager.color(254f / 255, 182f / 255, 36f / 255);
             if (scale2d > 0 && scale2d < 2 && pin.dx > 0) {
                 guiX = event.getResolution().getScaledWidth() - iconsize;
                 guiY = iconsize;
@@ -233,12 +244,19 @@ public class PinRenderer {
 
             tess.draw();
 
-            GL11.glDisable(GL11.GL_TEXTURE_2D);
+            /*
+            GlStateManager.disableTexture2D();
+            //GL11.glDisable(GL11.GL_TEXTURE_2D);
+            GlStateManager.
             GL11.glPointSize(100f);
             //renderer.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_TEX);
             //tess.draw();
 
-            GL11.glEnable(GL11.GL_TEXTURE_2D);
+             */
+            //GL11.glEnable(GL11.GL_TEXTURE_2D);
+            GlStateManager.enableTexture2D();
+            GlStateManager.depthMask(false);
+            GlStateManager.enableDepth();
             EntityPlayer p = Minecraft.getMinecraft().player;
 
             double pinLength = Math.sqrt((p.posX - pin.x) * (p.posX - pin.x) + (p.posY - pin.y) * (p.posY - pin.y) + (p.posZ - pin.z) * (p.posZ - pin.z));
@@ -272,14 +290,15 @@ public class PinRenderer {
             } else {
                 if (pin.dx * event.getResolution().getScaledHeight() / (float) Minecraft.getMinecraft().displayHeight < 0 || (-dy + Minecraft.getMinecraft().displayHeight / 2f) * event.getResolution().getScaledWidth() / (float) Minecraft.getMinecraft().displayWidth < 0)
                     return;
-                GL11.glDisable(GL11.GL_TEXTURE_2D);
-                GL11.glPointSize(20f);
+                //GL11.glDisable(GL11.GL_TEXTURE_2D);
+                GlStateManager.disableTexture2D();
+                //GL11.glPointSize(20f);
                 // tess.startDrawing(GL11.GL_POINTS);
                 //tess.draw();
             }
-            renderer.finishDrawing();
-            GL11.glPopMatrix();
-            GL11.glPopAttrib();
+            //renderer.finishDrawing();
+            GlStateManager.popMatrix();
+            GlStateManager.popAttrib();
         }
     }
 
