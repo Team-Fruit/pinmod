@@ -112,7 +112,7 @@ public class PinRenderer {
         float f5 = ActiveRenderInfo.getRotationZ();
         float f6 = ActiveRenderInfo.getRotationYZ();
         float f7 = ActiveRenderInfo.getRotationXY();
-        float f4 = ActiveRenderInfo.getRotationYZ();
+        float f4 = ActiveRenderInfo.getRotationXZ();
 
         //Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder renderer = tess.getBuffer();
@@ -164,7 +164,8 @@ public class PinRenderer {
         //GL11.glEnable(GL11.GL_TEXTURE_2D);
         GlStateManager.enableTexture2D();
         //GL11.glDisable(GL11.GL_DEPTH_TEST);
-        GlStateManager.disableDepth();
+        //GlStateManager.disableDepth();
+        GlStateManager.depthMask(false);
         GlStateManager.scale((float) scale, (float) scale, (float) scale);
         fr.drawString(str, -fr.getStringWidth(str) / 2, 0 * 10 - 1 * 5, 0xFFFFFF);
 
@@ -181,7 +182,7 @@ public class PinRenderer {
             double dy = (pin.dy - Minecraft.getMinecraft().displayHeight / 2f);
             Tessellator tess = Tessellator.getInstance();
 
-            GlStateManager.pushAttrib();
+            //GlStateManager.pushAttrib();
             GlStateManager.pushMatrix();
             Minecraft.getMinecraft().renderEngine.bindTexture(new ResourceLocation("pinmod", "textures/pin_icon_1.png"));
 
@@ -254,9 +255,9 @@ public class PinRenderer {
 
              */
             //GL11.glEnable(GL11.GL_TEXTURE_2D);
-            GlStateManager.enableTexture2D();
+            //GlStateManager.enableTexture2D();
             GlStateManager.depthMask(false);
-            GlStateManager.enableDepth();
+
             EntityPlayer p = Minecraft.getMinecraft().player;
 
             double pinLength = Math.sqrt((p.posX - pin.x) * (p.posX - pin.x) + (p.posY - pin.y) * (p.posY - pin.y) + (p.posZ - pin.z) * (p.posZ - pin.z));
@@ -269,6 +270,7 @@ public class PinRenderer {
                 fr.drawString(str, (int)(guiX - iconsize - fr.getStringWidth(str)), (int) (guiY - iconsize / 2 + 2), 0xFFFFFF);
             }
 
+            /*
             if (!pin.isVisible || pin.dx < 0 || pin.dy < 0 || pin.dx > Minecraft.getMinecraft().displayWidth || pin.dy > Minecraft.getMinecraft().displayHeight) {
 
 
@@ -296,9 +298,12 @@ public class PinRenderer {
                 // tess.startDrawing(GL11.GL_POINTS);
                 //tess.draw();
             }
-            //renderer.finishDrawing();
+
+             */
+            GlStateManager.depthMask(true);
+            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             GlStateManager.popMatrix();
-            GlStateManager.popAttrib();
+            //GlStateManager.popAttrib();
         }
     }
 
