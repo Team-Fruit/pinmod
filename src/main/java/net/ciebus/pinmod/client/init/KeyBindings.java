@@ -8,11 +8,15 @@ import net.java.games.input.Controller;
 import net.java.games.input.Keyboard;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 public final class KeyBindings {
 
@@ -20,17 +24,23 @@ public final class KeyBindings {
 
     public static void init() {
         ClientRegistry.registerKeyBinding(sampleKey);
-        FMLCommonHandler.instance().bus().register(new KeyBindings());
+        FMLJavaModLoadingContext.get().getModEventBus().register(new KeyBindings());
         MinecraftForge.EVENT_BUS.register(new KeyBindings());
     }
 
     @SubscribeEvent
     public void onKeyInput(InputEvent.KeyInputEvent event) {
         if (sampleKey.isPressed()) {
-            RayTraceResult mop = Minecraft.getInstance().renderViewEntity.rayTrace(200, 1.0F);
+            double maxdistance = 200d;
+            PlayerEntity player = Minecraft.getInstance().player;
+            Vec3d vec = player.getPositionVector();
+            Vec3d vec3 = new Vec3d(vec.x,vec.y+player.getEyeHeight(),vec.z);
+            Vec3d vec3a = player.getLook(1.0F);
+            Vec3d vec3b = vec3.add(vec3a.getX() * maxdistance, vec3a.getY()*  maxdistance, vec3a.getZ()*  maxdistance);
+            RayTraceResult mop = Minecraft.getInstance().world.rayTraceBlocks(new RayTraceContext(vec3, vec3b,RayTraceContext.BlockMode.OUTLINE,  RayTraceContext.FluidMode.ANY, player));
             if (mop != null) {
-                boolean state = PinManager.isToDelete(mop.hitVec.xCoord, mop.hitVec.yCoord, mop.hitVec.zCoord, Minecraft.getMinecraft().thePlayer.getDisplayName());
-                PacketHandler.INSTANCE2.sendToServer(new MessageKeyPressed(state, mop.hitVec.xCoord, mop.hitVec.yCoord, mop.hitVec.zCoord, Minecraft.getMinecraft().thePlayer.getDisplayName(), Minecraft.getMinecraft().thePlayer.worldObj.provider.dimensionId));
+                boolean state = PinManager.isToDelete(mop.getHitVec().x, mop.getHitVec().y, mop.getHitVec().z, Minecraft.getInstance().player.getDisplayName().getFormattedText());
+                PacketHandler.INSTANCE2.sendToServer(new MessageKeyPressed(state, mop.getHitVec().x, mop.getHitVec().y, mop.getHitVec().z, Minecraft.getInstance().player.getDisplayName().getFormattedText(),0));
             }
         }
     }

@@ -8,6 +8,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.PacketDistributor;
 
 import java.util.function.Supplier;
@@ -25,6 +26,8 @@ public class PinSynchronizer {
         //}
     }
 
+    //todo
+    /*
     @SubscribeEvent
     public void onPlayerLeaved(ClientDisconnectionFromServerEvent event) {
         for (PinData pin : PinManager.pins()) {
@@ -32,8 +35,10 @@ public class PinSynchronizer {
         }
     }
 
+     */
+
     public static void init() {
         MinecraftForge.EVENT_BUS.register(new PinSynchronizer());
-        FMLCommonHandler.instance().bus().register(new PinSynchronizer());
+        FMLJavaModLoadingContext.get().getModEventBus().register(new PinSynchronizer());
     }
 }
