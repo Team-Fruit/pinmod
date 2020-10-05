@@ -95,7 +95,7 @@ public class PinRenderer {
         Tessellator tess = Tessellator.getInstance();
         GlStateManager.pushAttrib();
         GlStateManager.pushMatrix();
-        Minecraft.getMinecraft().renderEngine.bindTexture(new ResourceLocation("pinmod", "textures/pin_icon_1.png"));
+        Minecraft.getMinecraft().renderEngine.bindTexture(new ResourceLocation("pinmod","textures/pin_icon_1.png"));
 
 
         GlStateManager.color(254f / 255, 182f / 255, 36f / 255);
