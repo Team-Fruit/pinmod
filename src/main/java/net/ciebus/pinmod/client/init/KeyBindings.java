@@ -2,8 +2,10 @@ package net.ciebus.pinmod.client.init;
 
 import net.ciebus.pinmod.PinManager;
 import net.ciebus.pinmod.client.render.PinRenderer;
+import net.ciebus.pinmod.common.network.CMessageKeyPressedHandler;
 import net.ciebus.pinmod.common.network.MessageKeyPressed;
 import net.ciebus.pinmod.common.network.PacketHandler;
+import net.ciebus.pinmod.common.network.SMessageKeyPressedHandler;
 import net.java.games.input.Controller;
 import net.java.games.input.Keyboard;
 import net.minecraft.client.Minecraft;
@@ -17,6 +19,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 public final class KeyBindings {
 
@@ -40,7 +43,7 @@ public final class KeyBindings {
             RayTraceResult mop = Minecraft.getInstance().world.rayTraceBlocks(new RayTraceContext(vec3, vec3b,RayTraceContext.BlockMode.OUTLINE,  RayTraceContext.FluidMode.ANY, player));
             if (mop != null) {
                 boolean state = PinManager.isToDelete(mop.getHitVec().x, mop.getHitVec().y, mop.getHitVec().z, Minecraft.getInstance().player.getDisplayName().getFormattedText());
-                PacketHandler.INSTANCE2.sendToServer(new MessageKeyPressed(state, mop.getHitVec().x, mop.getHitVec().y, mop.getHitVec().z, Minecraft.getInstance().player.getDisplayName().getFormattedText(),0));
+                PacketHandler.INSTANCE.sendToServer(new CMessageKeyPressedHandler(state, mop.getHitVec().x, mop.getHitVec().y, mop.getHitVec().z, Minecraft.getInstance().player.getDisplayName().getFormattedText(),0));
             }
         }
     }

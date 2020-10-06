@@ -15,11 +15,8 @@ import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.lwjgl.opengl.GL11;
 
-import  org.lwjgl.util.*;
-
 import javax.vecmath.Matrix3d;
 import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
 import javax.vecmath.Vector3d;
 
 public class PinRenderer {
