@@ -20,16 +20,18 @@ import java.nio.FloatBuffer;
 import javax.vecmath.Vector3d;
 
 public class PinRenderer {
-
+/*
     private static FloatBuffer viewport = GLAllocation.createDirectFloatBuffer(16);
     private static FloatBuffer modelview = GLAllocation.createDirectFloatBuffer(16);
     private static FloatBuffer projection = GLAllocation.createDirectFloatBuffer(16);
     private static FloatBuffer objectCoords = GLAllocation.createDirectFloatBuffer(16);
 
+
+ */
     float ny = 0f;
     Vec3d vtmp = new Vec3d(0, 0, 0);
 
-    //@SubscribeEvent
+    @SubscribeEvent
     public void renderPin(RenderWorldLastEvent event) {
         float partialTicks = event.getPartialTicks();
         for (PinData pin : PinManager.pins()) {
@@ -101,7 +103,7 @@ public class PinRenderer {
         cpvec.rotatePitch((float) (Math.PI / 180) * 45);
 
         Tessellator tess = Tessellator.getInstance();
-        GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
+        //GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
         GL11.glPushMatrix();
 
         Minecraft.getInstance().getTextureManager().bindTexture(new ResourceLocation("pinmod", "textures/pin_icon_1.png"));
@@ -140,7 +142,7 @@ public class PinRenderer {
         //GL11.glEnable(GL11.GL_DEPTH_TEST);
         GlStateManager.enableDepthTest();
         //GL11.glRotated(Math.atan2(f3, f5) / Math.PI * 180d + 90d, 0, 1, 0);
-        GlStateManager.rotatef((float) Math.atan2(f3, f5) /(float) Math.PI * 180f + 90f, 0, 1, 0);
+        GL11.glRotatef((float) Math.atan2(f3, f5) /(float) Math.PI * 180f + 90f, 0, 1, 0);
         //GL11.glDisable(GL11.GL_TEXTURE_2D);
         GlStateManager.disableTexture();
         renderer.begin(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION);
@@ -178,7 +180,7 @@ public class PinRenderer {
 
 
         GL11.glPopMatrix();
-        GL11.glPopAttrib();
+        //GL11.glPopAttrib();
     }
 
     @SubscribeEvent
@@ -188,7 +190,7 @@ public class PinRenderer {
             double dy = (pin.dy - Minecraft.getInstance().getMainWindow().getHeight() / 2f);
             Tessellator tess = Tessellator.getInstance();
 
-            GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
+            //GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
             GL11.glPushMatrix();
             Minecraft.getInstance().getTextureManager().bindTexture(new ResourceLocation("pinmod", "textures/pin_icon_1.png"));
             BufferBuilder renderer = tess.getBuffer();
@@ -299,9 +301,9 @@ public class PinRenderer {
             }
              */
             GlStateManager.depthMask(true);
-            GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+            //GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
             GlStateManager.popMatrix();
-            //GlStateManager.popAttrib();
+            //GlStateManager.popAttributes();
         }
     }
 
