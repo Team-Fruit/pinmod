@@ -181,6 +181,11 @@ public class PinRenderer {
         for (PinData pin : PinManager.pins()) {
             double dy = (pin.dy - Minecraft.getMinecraft().displayHeight / 2f);
             Tessellator tess = Tessellator.getInstance();
+            EntityPlayer p = Minecraft.getMinecraft().player;
+
+            double pinLength = Math.sqrt((p.posX - pin.x) * (p.posX - pin.x) + (p.posY - pin.y) * (p.posY - pin.y) + (p.posZ - pin.z) * (p.posZ - pin.z));
+
+            if(pinLength < 20) continue;
 
             //GlStateManager.pushAttrib();
             GlStateManager.pushMatrix();
@@ -258,9 +263,6 @@ public class PinRenderer {
             //GlStateManager.enableTexture2D();
             GlStateManager.depthMask(false);
 
-            EntityPlayer p = Minecraft.getMinecraft().player;
-
-            double pinLength = Math.sqrt((p.posX - pin.x) * (p.posX - pin.x) + (p.posY - pin.y) * (p.posY - pin.y) + (p.posZ - pin.z) * (p.posZ - pin.z));
 
             FontRenderer fr = Minecraft.getMinecraft().fontRenderer;
             String str = pin.player + "(" + (int) pinLength + "m)";
