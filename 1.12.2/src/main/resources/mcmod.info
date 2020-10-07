@@ -3,7 +3,7 @@
   "modid": "pin",
   "name": "Pin Mod",
   "description": "",
-  "version": "",
+  "version": "1.0",
   "mcversion": "${mcversion}",
   "url": "https://github.com/team-fruit/pinmod",
   "updateUrl": "",
