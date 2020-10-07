@@ -28,6 +28,13 @@ public class PinSynchronizer {
     }
 
     @SubscribeEvent
+    public void onPlayerLeave(PlayerEvent.PlayerLoggedOutEvent event) {
+        MessageKeyPressed pindata = new MessageKeyPressed(true,0,0,0,event.player.getDisplayName().getFormattedText(),0);
+        PinManager.removePin(event.player.getDisplayName().getFormattedText());
+        PacketHandler.INSTANCE1.sendToAll(pindata);
+    }
+
+    @SubscribeEvent
     public void onPlayerLeaved(FMLNetworkEvent.ClientDisconnectionFromServerEvent event) {
         for (PinData pin : PinManager.pins()) {
             PinManager.removePin(pin.player);
