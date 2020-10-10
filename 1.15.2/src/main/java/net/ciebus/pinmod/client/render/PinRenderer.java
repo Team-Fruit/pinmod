@@ -40,7 +40,7 @@ public class PinRenderer {
     }
 
     public void render(PinData pin, float partialTicks) {
-        // if (Minecraft.getInstance().world.dimension. .dimensionId != pin.dimId)return;
+        if (Minecraft.getInstance().world.getWorldType().getId() != pin.dimId)return;
 
         PlayerEntity p = Minecraft.getInstance().player;
         double pinLength = Math.sqrt((p.getPosX() - pin.x) * (p.getPosY() - pin.x) + (p.getPosY() - pin.y) * (p.getPosY() - pin.y) + (p.getPosZ() - pin.z) * (p.getPosZ() - pin.z));
@@ -187,6 +187,8 @@ public class PinRenderer {
     public void renderGui(RenderGameOverlayEvent.Post event) {
         float partialTicks = event.getPartialTicks();
         for (PinData pin : PinManager.pins()) {
+            if(Minecraft.getInstance().player.world.getWorldType().getId() != pin.dimId) continue;
+
             double dy = (pin.dy - Minecraft.getInstance().getMainWindow().getHeight() / 2f);
             Tessellator tess = Tessellator.getInstance();
 
