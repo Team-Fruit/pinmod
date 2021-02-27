@@ -1,31 +1,6 @@
 
-# Created by https://www.toptal.com/developers/gitignore/api/git,java,forgegradle,intellij,eclipse
-# Edit at https://www.toptal.com/developers/gitignore?templates=git,java,forgegradle,intellij,eclipse
-
-### Minecraft Server
-eula.txt
-ops.json
-banned-ips.json
-banned-players.json
-server.properties
-servers.dat
-world
-whitelist.json
-usercache.json
-
-### Minecraft
-eclipse
-.gradle
-crash-reports
-logs
-saves
-.idea
-config
-options.txt
-usernamecache.json
-
-# Files from Forge MDK
-forge*changelog.txt
+# Created by https://www.toptal.com/developers/gitignore/api/git,java,eclipse,intellij,forgegradle,gradle
+# Edit at https://www.toptal.com/developers/gitignore?templates=git,java,eclipse,intellij,forgegradle,gradle
 
 ### Eclipse ###
 .metadata
@@ -240,4 +215,23 @@ fabric.properties
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
-# End of https://www.toptal.com/developers/gitignore/api/git,java,forgegradle,intellij,eclipse
+### Gradle ###
+.gradle
+build/
+
+# Ignore Gradle GUI config
+gradle-app.setting
+
+# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
+!gradle-wrapper.jar
+
+# Cache of project
+.gradletasknamecache
+
+# # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
+# gradle/wrapper/gradle-wrapper.properties
+
+### Gradle Patch ###
+**/build/
+
+# End of https://www.toptal.com/developers/gitignore/api/git,java,eclipse,intellij,forgegradle,gradle
